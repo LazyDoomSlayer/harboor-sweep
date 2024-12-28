@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, CSSProperties, ref } from "vue";
+import { computed, type CSSProperties, ref } from "vue";
 import { EScrollBehavior } from "@/types/virtual-list.types";
 
 interface Props {
