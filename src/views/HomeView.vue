@@ -1,56 +1,26 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
 import VirtualList from '@/components/virtual/VirtualList.vue';
+
+import { onMounted, ref } from 'vue';
+import { invoke } from '@tauri-apps/api/core';
+
 import { EScrollBehavior } from '@/types/virtual-list.types';
+import type { TPortProcessList } from '@/types';
 
-const ports = ref(
-  Array.from({ length: 200 }, (_, index) => ({
-    id: index + 1,
-    port: 8000 + index,
-    processName: `Process ${index + 1}`,
-    pid: 1000 + index,
-    state: 'LISTENING',
-  })),
-);
+const ports = ref<TPortProcessList>([]);
 
-function updatePorts() {
-  if (Math.random() < 0.7) {
-    const newPort = {
-      id: ports.value.length
-        ? Math.max(...ports.value.map((p) => p.id)) + 1
-        : 1,
-      port: 8000 + Math.floor(Math.random() * 100),
-      processName: `NewProcess ${Math.floor(Math.random() * 100)}`,
-      pid: 2000 + Math.floor(Math.random() * 100),
-      state: 'LISTENING',
-    };
-    ports.value.push(newPort);
-    console.log('Added Port:', newPort);
+async function getPorts(): Promise<void> {
+  try {
+    const result: TPortProcessList = await invoke('fetch_ports');
+    ports.value = result;
+    console.log('Fetched ports:', ports.value);
+  } catch (error) {
+    console.error('Failed to fetch ports:', error);
   }
-
-  if (ports.value.length > 50 && Math.random() < 0.3) {
-    const removeIndex = Math.floor(Math.random() * ports.value.length);
-    const removedPort = ports.value.splice(removeIndex, 1)[0];
-    console.log('Removed Port:', removedPort);
-  }
-
-  ports.value = ports.value.map((port) => {
-    if (Math.random() < 0.5) {
-      return {
-        ...port,
-        state: ['LISTENING', 'CLOSED', 'ESTABLISHED'][
-          Math.floor(Math.random() * 3)
-        ],
-      };
-    }
-    return port;
-  });
-
-  console.log('Updated Ports:', ports.value.length);
 }
 
 onMounted(() => {
-  setInterval(updatePorts, 2000);
+  getPorts();
 });
 
 const searchModel = ref<number>(100);
@@ -64,6 +34,7 @@ const virtualListRef = ref();
     label="search"
     placeholder="search"
   />
+  <button @click.left="getPorts">fetch again</button>
   <button @click.left="virtualListRef.goToElementWithIndex(searchModel)">
     Search
   </button>
@@ -77,8 +48,9 @@ const virtualListRef = ref();
       :item-height="21"
       :scroll-behavior="EScrollBehavior.SMOOTH"
     >
-      <template #item="{ item }">
-        {{ item.id }} {{ item.pid }} {{ item.processName }} {{ item.port }}
+      <template #item="{ item: port }">
+        Port: {{ port.port }}, PID: {{ port.pid }}, Process:
+        {{ port.process_name }}, Procs.Path: {{ port.process_path }}
       </template>
     </VirtualList>
   </div>
