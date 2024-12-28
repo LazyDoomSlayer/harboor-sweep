@@ -1,8 +1,22 @@
 {
   "name": "harbor-sweep",
-  "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "private": false,
+  "description": "GUI App",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LazyDoomSlayer/harbor-sweep.git"
+  },
+  "author": "https://github.com/LazyDoomSlayer",
+  "license": "MIT",
+  "keywords": [
+    "vue",
+    "tauri",
+    "vite",
+    "typescript",
+    "rust"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
@@ -36,6 +50,8 @@
     "typescript": "~5.6.2",
     "vite": "^6.0.3",
     "vite-plugin-vue-devtools": "^7.5.4",
-    "vue-tsc": "^2.1.10"
+    "vue-tsc": "^2.1.10",
+    "@vue/tsconfig": "^0.5.1",
+    "npm-run-all2": "^7.0.1"
   }
 }

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { computed, CSSProperties, ref } from "vue";
-// @ts-expect-error Somthing wrong with vue complier
 import { EScrollBehavior } from "@/types/virtual-list.types";
 
 interface Props {
