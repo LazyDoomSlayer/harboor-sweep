@@ -49,7 +49,13 @@ fn parse_lsof_output(output: &str) -> Result<Vec<PortInfo>, String> {
             Err(_) => continue,
         };
 
-        let port = parts[8].split(':').last().unwrap_or("").to_string();
+        let port: u16 = parts[8]
+            .split(':')
+            .last()
+            .unwrap_or("0")
+            .parse::<u16>()
+            .unwrap_or(0);
+
         let process_path = match get_process_path(pid) {
             Ok(path) => path,
             Err(err) => err,
