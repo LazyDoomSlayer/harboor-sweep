@@ -10,3 +10,4 @@ export interface IProcess {
 }
 
 export type TPortProcessItem = IPort & IProcess;
+export type TPortProcessList = TPortProcessItem[];
