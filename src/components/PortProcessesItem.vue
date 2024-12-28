@@ -6,12 +6,12 @@
     :style="computedStyleObject"
     class="process-item"
   >
-    <div class="process-item__pid text-clamp--1">{{ props.process.pid }}</div>
-    <div class="process-item__port text-clamp--1">{{ props.process.port }}</div>
-    <div class="process-item__process-name text-clamp--1">
+    <div class="process-item__pid text-clamp">{{ props.process.pid }}</div>
+    <div class="process-item__port text-clamp">{{ props.process.port }}</div>
+    <div class="process-item__process-name text-clamp">
       {{ props.process.process_name }}
     </div>
-    <div class="process-item__process-path text-clamp--1">
+    <div class="process-item__process-path text-clamp">
       {{ props.process.process_path }}
     </div>
     <div class="process-item__actions">
