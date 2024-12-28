@@ -1,0 +1,29 @@
+@use 'sass:map';
+@use '../abstracts/_variables.scss' as variables;
+
+@mixin flex-display {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+@mixin transition-all($speed: 'medium', $type: 'default') {
+  $speed-value: map.get(variables.$animation-speed, $speed);
+  $type-value: map.get(variables.$animation-type, $type);
+
+  @if $speed-value == null {
+    @error "Invalid speed '#{$speed}' specified. Available options: #{map.keys($animation-speed)}";
+  }
+
+  @if $type-value == null {
+    @error "Invalid type '#{$type}' specified. Available options: #{map.keys($animation-type)}";
+  }
+
+  transition: all #{$speed-value} #{$type-value};
+}
+
+@mixin disable-user-selection {
+  user-select: none;
+  pointer-events: none;
+}
