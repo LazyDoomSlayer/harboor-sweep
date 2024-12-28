@@ -41,3 +41,13 @@ body {
     @include clamp(3);
   }
 }
+
+.disabled-state {
+  opacity: 0.7;
+  pointer-events: none;
+  cursor: default !important;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}

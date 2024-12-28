@@ -25,7 +25,10 @@
 import BaseButton from '@/components/base/BaseButton.vue';
 
 import type { TPortProcessItem } from '@/types';
-import { computed, onMounted, shallowRef, type CSSProperties, ref } from 'vue';
+import { computed, shallowRef, type CSSProperties, ref, toRaw } from 'vue';
+
+import { storeToRefs } from 'pinia';
+import { useDialogsStore } from '@/store/dialogs.store';
 
 const props = defineProps<{
   process: TPortProcessItem;
@@ -47,12 +50,16 @@ function updateHoverStatus(hovered: boolean): void {
 }
 
 function killProcess(): void {
-  console.log('Process needs to be killed: ', props.process);
+  confirmKillingDialog.value = {
+    opened: true,
+    process: toRaw(props.process),
+  };
+
+  console.log(confirmKillingDialog.value);
 }
 
-onMounted(() => {
-  console.log('moubnted');
-});
+const dialogStore = useDialogsStore();
+const { confirmKillingDialog } = storeToRefs(dialogStore);
 </script>
 
 <style lang="scss" scoped>

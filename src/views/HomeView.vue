@@ -4,6 +4,7 @@ import { invoke } from '@tauri-apps/api/core';
 
 import type { TPortProcessList } from '@/types';
 import PortProcessesTable from '@/components/PortProcessesTable.vue';
+import ConfirmKillingDialog from '@/components/dialog/ConfirmKillingDialog.vue';
 
 const ports = ref<TPortProcessList>([]);
 
@@ -23,5 +24,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <ConfirmKillingDialog />
+
   <PortProcessesTable :list="ports" />
 </template>
