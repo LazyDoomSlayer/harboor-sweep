@@ -1,4 +1,4 @@
-use crate::common::PortInfo;
+use crate::common::{KillProcessResponse, PortInfo};
 use std::collections::HashSet;
 use std::fs;
 use std::process::Command;
@@ -67,4 +67,32 @@ fn parse_lsof_output(output: &str) -> Result<Vec<PortInfo>, String> {
     }
 
     Ok(ports)
+}
+
+pub fn kill_process(pid: u32) -> KillProcessResponse {
+    let output = Command::new("kill").arg(pid.to_string()).output();
+
+    match output {
+        Ok(output) if output.status.success() => KillProcessResponse {
+            success: true,
+            message: format!("Successfully killed process with PID {}", pid),
+        },
+        Ok(output) => {
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            let exit_code = output.status.code().unwrap_or(-1);
+            KillProcessResponse {
+                success: false,
+                message: format!(
+                    "Failed to kill process {} (Exit code: {}): {}",
+                    pid,
+                    exit_code,
+                    stderr.trim()
+                ),
+            }
+        }
+        Err(e) => KillProcessResponse {
+            success: false,
+            message: format!("Failed to execute kill command: {}", e),
+        },
+    }
 }

@@ -31,6 +31,8 @@ import { useDialogsStore } from '@/store/dialogs.store.ts';
 import { storeToRefs } from 'pinia';
 
 import useKillProcess from '@/composables/useKillProcess';
+import { usePortProcessesStore } from '@/store/port-processes.store';
+import { EUsePortProcessesStoreActions } from '@/types/store/port-processes.types';
 
 const dialogStore = useDialogsStore();
 const { confirmKillingDialog } = storeToRefs(dialogStore);
@@ -43,9 +45,25 @@ function closeAndRevertToDefaults(): void {
 
 const { isLoading, kill } = useKillProcess();
 
+const portProcessesStore = usePortProcessesStore();
+
 async function submitKilling(): Promise<void> {
+  const pid = confirmKillingDialog.value.process?.pid;
+
+  if (!pid) {
+    throw new Error('Could not find process PID.');
+  }
+
   try {
-    await kill();
+    const response = await kill(pid);
+
+    if (response?.success) {
+      await portProcessesStore[
+        EUsePortProcessesStoreActions.GET_ACTIVE_PORT_PROCCESSES
+      ]();
+
+      closeAndRevertToDefaults();
+    }
   } catch (error) {
     console.error(error);
   }

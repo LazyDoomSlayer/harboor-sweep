@@ -23,23 +23,7 @@ body {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
-
-  @mixin clamp($lines) {
-    -webkit-line-clamp: $lines;
-    max-height: calc($lines * 1.2em);
-  }
-
-  &--1 {
-    @include clamp(1);
-  }
-
-  &--2 {
-    @include clamp(2);
-  }
-
-  &--3 {
-    @include clamp(3);
-  }
+  -webkit-line-clamp: 1;
 }
 
 .disabled-state {
