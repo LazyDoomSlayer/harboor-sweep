@@ -17,3 +17,27 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
+
+.text-clamp {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+
+  @mixin clamp($lines) {
+    -webkit-line-clamp: $lines;
+    max-height: calc($lines * 1.2em);
+  }
+
+  &--1 {
+    @include clamp(1);
+  }
+
+  &--2 {
+    @include clamp(2);
+  }
+
+  &--3 {
+    @include clamp(3);
+  }
+}
