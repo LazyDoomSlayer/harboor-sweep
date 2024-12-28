@@ -59,7 +59,7 @@ async function submitKilling(): Promise<void> {
 
     if (response?.success) {
       await portProcessesStore[
-        EUsePortProcessesStoreActions.GET_ACTIVE_PORT_PROCCESSES
+        EUsePortProcessesStoreActions.FETCH_ACTIVE_PORT_PROCCESSES
       ]();
 
       closeAndRevertToDefaults();
