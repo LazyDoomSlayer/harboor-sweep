@@ -1,20 +1,14 @@
 <script lang="ts" setup>
 import { computed, type CSSProperties, ref } from 'vue';
-import { EScrollBehavior } from '@/types/virtual-list.types';
+import { EScrollBehavior, type IProps } from '@/types/virtual-list.types';
 
-interface Props {
-  list: unknown[];
-  scrollBehavior?: EScrollBehavior;
-  itemHeight: number;
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const componentProps = withDefaults(defineProps<IProps>(), {
   scrollBehavior: EScrollBehavior.AUTO,
 });
 
 const virtualListStyle = computed<CSSProperties>(() => {
   return {
-    scrollBehavior: props.scrollBehavior,
+    scrollBehavior: componentProps.scrollBehavior,
   };
 });
 
@@ -37,7 +31,7 @@ function goToStart(): void {
 }
 
 function goToBottom(): void {
-  goToElementWithIndex(props.list.length - 1);
+  goToElementWithIndex(componentProps.list.length - 1);
 }
 
 defineExpose({
@@ -53,8 +47,8 @@ defineExpose({
     ref="virtualList"
     :style="virtualListStyle"
     class="recycle-scroller"
-    :items="props.list"
-    :item-size="props.itemHeight"
+    :items="componentProps.list"
+    :item-size="componentProps.itemHeight"
     key-field="id"
     v-slot="{ item }"
   >

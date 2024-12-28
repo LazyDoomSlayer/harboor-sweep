@@ -17,12 +17,15 @@
       "@/*": ["./src/*"]
     },
 
+    "preserveValueImports": false, // Avoids naming conflicts with inferred private types
+    "noUncheckedIndexedAccess": false, // Loosens restrictions for inferred types
+
     // Tauri Conf
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "skipLibCheck": false, // default was true
+    "skipLibCheck": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",

@@ -11,7 +11,7 @@
     "types": ["node"],
 
     // Tauri Default Options
-    "skipLibCheck": false, // defualt was true
-    "allowSyntheticDefaultImports": false // defualt was true
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true
   }
 }
