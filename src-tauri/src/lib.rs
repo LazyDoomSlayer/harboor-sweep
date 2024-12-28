@@ -1,6 +1,6 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 mod common;
-use crate::common::PortInfo;
+use crate::common::{KillProcessResponse, PortInfo};
 
 #[cfg(target_family = "unix")]
 mod unix;
@@ -9,7 +9,7 @@ mod unix;
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![fetch_ports])
+        .invoke_handler(tauri::generate_handler![fetch_ports, kill_process])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -19,5 +19,13 @@ fn fetch_ports() -> Result<Vec<PortInfo>, String> {
     #[cfg(target_family = "unix")]
     {
         unix::fetch_ports()
+    }
+}
+
+#[tauri::command]
+fn kill_process(pid: u32) -> KillProcessResponse {
+    #[cfg(target_family = "unix")]
+    {
+        unix::kill_process(pid)
     }
 }
