@@ -1,4 +1,4 @@
 export enum EScrollBehavior {
-  AUTO = "auto",
-  SMOOTH = "smooth",
+  AUTO = 'auto',
+  SMOOTH = 'smooth',
 }

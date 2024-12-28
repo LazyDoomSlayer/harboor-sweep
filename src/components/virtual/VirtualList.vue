@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed, type CSSProperties, ref } from "vue";
-import { EScrollBehavior } from "@/types/virtual-list.types";
+import { computed, type CSSProperties, ref } from 'vue';
+import { EScrollBehavior } from '@/types/virtual-list.types';
 
 interface Props {
   list: unknown[];
@@ -22,7 +22,7 @@ const virtualList = ref();
 
 function goToElementWithIndex(index: number): void {
   if (!virtualList.value) {
-    throw new Error("could not find virtual list.");
+    throw new Error('could not find virtual list.');
   }
 
   try {
