@@ -4,6 +4,7 @@
     <div class="process-table-header__port">Port</div>
     <div class="process-table-header__process-name">Process Name</div>
     <div class="process-table-header__process-path">Process Path</div>
+    <div class="process-table-header__actions">Actions</div>
   </div>
 </template>
 
@@ -17,6 +18,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 @use '@/styles/abstracts/_mixins.scss' as mixins;
+
 .process-table-header {
   @include mixins.flex-display;
 
