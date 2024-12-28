@@ -1,30 +1,24 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
-import { invoke } from '@tauri-apps/api/core';
-
-import type { TPortProcessList } from '@/types';
 import PortProcessesTable from '@/components/PortProcessesTable.vue';
 import ConfirmKillingDialog from '@/components/dialog/ConfirmKillingDialog.vue';
 
-const ports = ref<TPortProcessList>([]);
+import { usePortProcessesStore } from '@/store/port-processes.store';
+import { EUsePortProcessesStoreActions } from '@/types/store/port-processes.types';
+import { storeToRefs } from 'pinia';
+import { onMounted } from 'vue';
 
-async function getPorts(): Promise<void> {
-  try {
-    const result: TPortProcessList = await invoke('fetch_ports');
-    ports.value = result;
-    console.log('Fetched ports:', ports.value);
-  } catch (error) {
-    console.error('Failed to fetch ports:', error);
-  }
-}
+const portProcessesStore = usePortProcessesStore();
+const { processes } = storeToRefs(portProcessesStore);
 
-onMounted(() => {
-  getPorts();
+onMounted(async () => {
+  await portProcessesStore[
+    EUsePortProcessesStoreActions.GET_ACTIVE_PORT_PROCCESSES
+  ]();
 });
 </script>
 
 <template>
   <ConfirmKillingDialog />
 
-  <PortProcessesTable :list="ports" />
+  <PortProcessesTable :list="processes" />
 </template>
