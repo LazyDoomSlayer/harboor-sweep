@@ -11,3 +11,8 @@ export interface IProcess {
 
 export type TPortProcessItem = IPort & IProcess;
 export type TPortProcessList = TPortProcessItem[];
+
+export interface IKillProcessResponse {
+  success: boolean;
+  message: string;
+}

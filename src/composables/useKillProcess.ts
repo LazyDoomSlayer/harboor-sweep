@@ -1,22 +1,27 @@
 import { ref, type Ref } from 'vue';
+import { invoke } from '@tauri-apps/api/core';
+import type { IKillProcessResponse } from '@/types';
 
 interface IUseKillProcessResult {
   isLoading: Ref;
-  kill: () => Promise<void>;
+  kill: (pid: number) => Promise<IKillProcessResponse | null>;
 }
 
 export default function useKillProcess(): IUseKillProcessResult {
   const isLoading = ref<boolean>(false);
 
-  async function kill(): Promise<void> {
+  async function kill(pid: number): Promise<IKillProcessResponse | null> {
     isLoading.value = true;
+
     try {
-      console.log('do something from here');
+      return await invoke('kill_process', { pid });
     } catch (error) {
       console.error(error);
     } finally {
-      //isLoading.value = false;
+      isLoading.value = false;
     }
+
+    return null;
   }
 
   return {

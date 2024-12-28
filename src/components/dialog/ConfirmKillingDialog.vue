@@ -44,8 +44,18 @@ function closeAndRevertToDefaults(): void {
 const { isLoading, kill } = useKillProcess();
 
 async function submitKilling(): Promise<void> {
+  const pid = confirmKillingDialog.value.process?.pid;
+
+  if (!pid) {
+    throw new Error('Could not find process PID.');
+  }
+
   try {
-    await kill();
+    const response = await kill(pid);
+
+    if (response?.success) {
+      closeAndRevertToDefaults();
+    }
   } catch (error) {
     console.error(error);
   }
