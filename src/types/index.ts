@@ -16,3 +16,9 @@ export interface IKillProcessResponse {
   success: boolean;
   message: string;
 }
+
+export enum ESorting {
+  NONE,
+  ASCENDING,
+  DESCEDNING,
+}

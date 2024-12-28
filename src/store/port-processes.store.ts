@@ -29,7 +29,6 @@ export const usePortProcessesStore = defineStore('port-processes', {
         const valueA = a[key];
         const valueB = b[key];
 
-        console.log('vlaue', typeof valueA === 'string', valueA);
         if (key === 'process_name') {
           return (
             valueA.localeCompare(valueB) *
