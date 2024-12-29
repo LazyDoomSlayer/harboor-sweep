@@ -3,16 +3,22 @@ import PortProcessesTable from '@/components/PortProcessesTable.vue';
 import ConfirmKillingDialog from '@/components/dialog/ConfirmKillingDialog.vue';
 
 import { usePortProcessesStore } from '@/store/port-processes.store';
-import { EUsePortProcessesStoreActions } from '@/types/store/port-processes.types';
-import { storeToRefs } from 'pinia';
-import { onMounted } from 'vue';
+import {
+  EUsePortProcessesStoreActions,
+  EUsePortProcessesStoreGetters,
+} from '@/types/store/port-processes.types';
+
+import { computed, onMounted } from 'vue';
 
 const portProcessesStore = usePortProcessesStore();
-const { processes } = storeToRefs(portProcessesStore);
+
+const computedProcesses = computed(
+  () => portProcessesStore[EUsePortProcessesStoreGetters.GET_SORTED_PROCESSES],
+);
 
 onMounted(async () => {
   await portProcessesStore[
-    EUsePortProcessesStoreActions.GET_ACTIVE_PORT_PROCCESSES
+    EUsePortProcessesStoreActions.FETCH_ACTIVE_PORT_PROCCESSES
   ]();
 });
 </script>
@@ -20,5 +26,5 @@ onMounted(async () => {
 <template>
   <ConfirmKillingDialog />
 
-  <PortProcessesTable :list="processes" />
+  <PortProcessesTable :list="computedProcesses" />
 </template>
