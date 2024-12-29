@@ -9,6 +9,7 @@ export interface IUsePortProcessesStoreState {
 }
 export enum EUsePortProcessesStoreActions {
   FETCH_ACTIVE_PORT_PROCCESSES = 'FETCH_ACTIVE_PORT_PROCCESSES',
+  START_PORT_PROCCESSES_OBSERVER = 'START_PORT_PROCCESSES_OBSERVER',
 }
 
 export enum EUsePortProcessesStoreGetters {

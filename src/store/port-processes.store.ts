@@ -1,11 +1,14 @@
 import { defineStore } from 'pinia';
+
 import { invoke } from '@tauri-apps/api/core';
+import { listen } from '@tauri-apps/api/event';
+
+import { ESorting, type TPortProcessList } from '@/types';
 import {
   type IUsePortProcessesStoreState,
   EUsePortProcessesStoreActions,
   EUsePortProcessesStoreGetters,
 } from '@/types/store/port-processes.types';
-import { ESorting, type TPortProcessList } from '@/types';
 
 export const usePortProcessesStore = defineStore('port-processes', {
   state: (): IUsePortProcessesStoreState => ({
@@ -50,10 +53,22 @@ export const usePortProcessesStore = defineStore('port-processes', {
     async [EUsePortProcessesStoreActions.FETCH_ACTIVE_PORT_PROCCESSES](): Promise<void> {
       try {
         const result: TPortProcessList = await invoke('fetch_ports');
-        console.log('result', result);
+
         this.processes = result;
       } catch (error) {
         console.error('Failed to fetch ports:', error);
+      }
+    },
+    async [EUsePortProcessesStoreActions.START_PORT_PROCCESSES_OBSERVER](): Promise<void> {
+      try {
+        await invoke('update_interval', { newInterval: 2 });
+        await invoke('start_monitoring');
+
+        listen('ports_update', (event) => {
+          this.processes = event.payload as TPortProcessList;
+        });
+      } catch (error) {
+        console.error(error);
       }
     },
   },

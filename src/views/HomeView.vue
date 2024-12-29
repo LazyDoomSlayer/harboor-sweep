@@ -17,8 +17,13 @@ const computedProcesses = computed(
 );
 
 onMounted(async () => {
+  /*
   await portProcessesStore[
-    EUsePortProcessesStoreActions.FETCH_ACTIVE_PORT_PROCCESSES
+  EUsePortProcessesStoreActions.FETCH_ACTIVE_PORT_PROCCESSES
+  ]();
+  */
+  await portProcessesStore[
+    EUsePortProcessesStoreActions.START_PORT_PROCCESSES_OBSERVER
   ]();
 });
 </script>

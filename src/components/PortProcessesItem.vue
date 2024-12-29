@@ -54,8 +54,6 @@ function killProcess(): void {
     opened: true,
     process: toRaw(props.process),
   };
-
-  console.log(confirmKillingDialog.value);
 }
 
 const dialogStore = useDialogsStore();

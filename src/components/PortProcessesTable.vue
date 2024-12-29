@@ -24,7 +24,7 @@ import VirtualList from '@/components/virtual/VirtualList.vue';
 
 import type { TPortProcessItem, TPortProcessList } from '@/types';
 import { EScrollBehavior } from '@/types/virtual-list.types';
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import PortProcessesTableHeader from './PortProcessesTableHeader.vue';
 
 const ITEM_HEIGHT: number = 32;
@@ -33,10 +33,6 @@ const props = defineProps<{
 }>();
 
 const virtualListRef = ref();
-
-onMounted(() => {
-  console.log('Table mounted');
-});
 </script>
 
 <style lang="scss" scoped>
