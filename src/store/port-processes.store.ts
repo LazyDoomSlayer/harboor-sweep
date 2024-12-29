@@ -21,7 +21,7 @@ export const usePortProcessesStore = defineStore('port-processes', {
     ): IUsePortProcessesStoreState['processes'] {
       const { key, direction } = state.sorting;
 
-      if (key === null || direction === ESorting.NONE) {
+      if (!key || direction === ESorting.NONE) {
         return state.processes;
       }
 
@@ -29,14 +29,20 @@ export const usePortProcessesStore = defineStore('port-processes', {
         const valueA = a[key];
         const valueB = b[key];
 
-        if (key === 'process_name') {
+        if (typeof valueA === 'string' && typeof valueB === 'string') {
           return (
             valueA.localeCompare(valueB) *
             (direction === ESorting.ASCENDING ? 1 : -1)
           );
         }
 
-        return (valueA - valueB) * (direction === ESorting.ASCENDING ? 1 : -1);
+        if (typeof valueA === 'number' && typeof valueB === 'number') {
+          return (
+            (valueA - valueB) * (direction === ESorting.ASCENDING ? 1 : -1)
+          );
+        }
+
+        return 0;
       });
     },
   },
