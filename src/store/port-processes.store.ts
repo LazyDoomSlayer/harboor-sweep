@@ -68,6 +68,12 @@ export const usePortProcessesStore = defineStore('port-processes', {
           this.processes = event.payload as TPortProcessList;
         });
       } catch (error) {
+        if (error === 'Monitoring is already running') {
+          listen('ports_update', (event) => {
+            this.processes = event.payload as TPortProcessList;
+          });
+          return;
+        }
         console.error(error);
       }
     },
