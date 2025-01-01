@@ -12,3 +12,12 @@ pub struct KillProcessResponse {
     pub success: bool,
     pub message: String,
 }
+
+#[derive(serde::Serialize, Debug, Clone)]
+pub struct ProcessInfo {
+    pub pid: u32,
+    pub port: u16,
+    pub name: String,
+    pub path: String,
+    pub parent_pid: Option<u32>,
+}
