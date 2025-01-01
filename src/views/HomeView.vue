@@ -2,6 +2,8 @@
 import PortProcessesTable from '@/components/PortProcessesTable.vue';
 import ConfirmKillingDialog from '@/components/dialog/ConfirmKillingDialog.vue';
 import ToastNotificationManager from '@/components/notifications/ToastNotificationManager.vue';
+import BaseTextField from '@/components/base/BaseTextField.vue';
+import BaseLabeledBox from '@/components/base/BaseLabeledBox.vue';
 
 import { usePortProcessesStore } from '@/store/port-processes.store';
 import {
@@ -9,29 +11,179 @@ import {
   EUsePortProcessesStoreGetters,
 } from '@/types/store/port-processes.types';
 
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import BaseButton from '@/components/base/BaseButton.vue';
 
 const portProcessesStore = usePortProcessesStore();
 
-const computedProcesses = computed(
-  () => portProcessesStore[EUsePortProcessesStoreGetters.GET_SORTED_PROCESSES],
-);
-
 onMounted(async () => {
-  /*
-  await portProcessesStore[
-  EUsePortProcessesStoreActions.FETCH_ACTIVE_PORT_PROCCESSES
-  ]();
-  */
   await portProcessesStore[
     EUsePortProcessesStoreActions.START_PORT_PROCCESSES_OBSERVER
   ]();
 });
+
+const boxBackgroundColor = '#ffffff';
+const boxColor = '#3e3e3e';
+const boxActiveColor = '#fab700';
+
+const pidModel = ref<string>('');
+const pidTextFieldRef = ref();
+
+const portModel = ref<string>('');
+const portTextFieldRef = ref();
+
+const processNameModel = ref<string>('');
+const processNameTextFieldRef = ref();
+
+const processPathModel = ref<string>('');
+const processPathTextFieldRef = ref();
+
+const computedProcesses = computed(() => {
+  const processes: TPortProcessList =
+    portProcessesStore[EUsePortProcessesStoreGetters.GET_SORTED_PROCESSES];
+
+  return processes.filter((process) => {
+    const pidMatch = process.pid
+      .toString()
+      .startsWith(pidModel.value.toString());
+
+    const portMatch = process.port.toString().startsWith(portModel.value);
+
+    const processNameMatch = process.process_name
+      .toLowerCase()
+      .startsWith(processNameModel.value.toLowerCase());
+
+    const processPathMatch = process.process_path
+      .toLowerCase()
+      .startsWith(processPathModel.value.toLowerCase());
+
+    return pidMatch && portMatch && processNameMatch && processPathMatch;
+  });
+});
+
+function focusOnTextField(elementReference: unknown): void {
+  try {
+    elementReference.focusField();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function resetFiltration(): void {
+  pidModel.value = '';
+  portModel.value = '';
+  processNameModel.value = '';
+  processPathModel.value = '';
+}
 </script>
 
 <template>
   <ConfirmKillingDialog />
   <ToastNotificationManager />
 
-  <PortProcessesTable :list="computedProcesses" />
+  <section style="display: flex; flex-direction: column; height: 100%">
+    <div class="port-processes-filtration__wrapper">
+      <div class="port-processes-filtration__filters">
+        <BaseLabeledBox
+          :background-color="boxBackgroundColor"
+          :color="boxColor"
+          :active-color="boxActiveColor"
+          :is-active="!!pidModel.length"
+          @click.left="focusOnTextField(pidTextFieldRef)"
+        >
+          <template #label>PID</template>
+          <template #content>
+            <BaseTextField
+              v-model="pidModel"
+              placeholder="0001"
+              ref="pidTextFieldRef"
+            />
+          </template>
+        </BaseLabeledBox>
+        <BaseLabeledBox
+          :background-color="boxBackgroundColor"
+          :color="boxColor"
+          :active-color="boxActiveColor"
+          :is-active="!!portModel.length"
+          @click.left="focusOnTextField(portTextFieldRef)"
+        >
+          <template #label>Port</template>
+          <template #content>
+            <BaseTextField
+              v-model="portModel"
+              placeholder="3000"
+              ref="portTextFieldRef"
+            />
+          </template>
+        </BaseLabeledBox>
+        <BaseLabeledBox
+          :background-color="boxBackgroundColor"
+          :color="boxColor"
+          :active-color="boxActiveColor"
+          :is-active="!!processNameModel.length"
+          @click.left="focusOnTextField(processNameTextFieldRef)"
+        >
+          <template #label>Process Name</template>
+          <template #content>
+            <BaseTextField
+              v-model.trim="processNameModel"
+              placeholder="node"
+              ref="processNameTextFieldRef"
+            />
+          </template>
+        </BaseLabeledBox>
+        <BaseLabeledBox
+          :background-color="boxBackgroundColor"
+          :color="boxColor"
+          :active-color="boxActiveColor"
+          :is-active="!!processPathModel.length"
+          @click.left="focusOnTextField(processPathTextFieldRef)"
+        >
+          <template #label>Process Path</template>
+          <template #content>
+            <BaseTextField
+              ref="processPathTextFieldRef"
+              v-model.trim="processPathModel"
+              placeholder="/usr/bin/gnome-software"
+            />
+          </template>
+        </BaseLabeledBox>
+      </div>
+      <BaseButton text="Reset Filtration" @left-clicked="resetFiltration" />
+    </div>
+    <PortProcessesTable style="flex-grow: 1" :list="computedProcesses" />
+  </section>
 </template>
+
+<style lang="scss" scoped>
+@use '@/styles/abstracts/_mixins.scss' as mixins;
+
+.port-processes-filtration {
+  @include mixins.flex-display;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: center;
+  position: relative;
+
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #3e3e3e;
+
+  &__wrapper {
+    @include mixins.flex-display;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: center;
+    position: relative;
+
+    margin: 16px 6px 6px 6px;
+  }
+  &__filters {
+    gap: 6px;
+    flex-grow: 1;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    margin-right: 6px;
+  }
+}
+</style>
