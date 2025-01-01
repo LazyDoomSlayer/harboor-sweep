@@ -56,8 +56,4 @@ defineExpose({
   </RecycleScroller>
 </template>
 
-<style lang="scss" scoped>
-.recycle-scroller {
-  height: 100%;
-}
-</style>
+<style lang="scss" scoped></style>

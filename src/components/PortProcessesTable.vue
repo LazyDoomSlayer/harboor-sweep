@@ -37,13 +37,18 @@ const virtualListRef = ref();
 
 <style lang="scss" scoped>
 .port-process-table {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 54px - 12px);
   padding: 6px;
 
   &__list {
     margin-top: 4px;
     border: 2px solid #3e3e3e;
-    padding: 4px;
+    padding: 4px 8px;
     border-radius: 4px;
+
+    max-height: calc(100% - 54px - 12px - 16px);
   }
 }
 </style>

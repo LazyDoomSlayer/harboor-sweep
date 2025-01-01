@@ -52,7 +52,6 @@ function changeSorting(key: keyof TPortProcessItem): void {
 .process-table-header {
   @include mixins.flex-display;
 
-  flex-grow: 1;
   border: 2px solid #3e3e3e;
   padding: 4px;
   border-radius: 4px;
