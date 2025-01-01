@@ -16,7 +16,7 @@
     </div>
     <div class="process-item__actions">
       <BaseButton text="KILL" @left-clicked="killProcess" />
-      <BaseButton text="Details" />
+      <BaseButton text="Details" @left-clicked="checkPort" />
     </div>
   </div>
 </template>
@@ -58,6 +58,21 @@ function killProcess(): void {
 
 const dialogStore = useDialogsStore();
 const { confirmKillingDialog } = storeToRefs(dialogStore);
+import { invoke } from '@tauri-apps/api/core';
+
+async function checkPort(): Promise<void> {
+  const port = props.process.port;
+
+  try {
+    console.log('before invoke', port);
+    const response = await invoke('get_processes_using_port', {
+      port,
+    });
+    console.log('response', response);
+  } catch (error) {
+    console.error(error);
+  }
+}
 </script>
 
 <style lang="scss" scoped>
