@@ -34,43 +34,27 @@ function handleRemovingToast(notification_id: string): void {
     console.error(error);
   }
 }
-import { v4 as uuidv4 } from 'uuid';
-
-notificationStore[EUseNotificationsStoreActions.ADD_TOAST_NOTICATION]({
-  id: uuidv4(),
-  title: `Success: Process with pid: ${191293923} , has been killed successfully.`,
-});
-
-notificationStore[EUseNotificationsStoreActions.ADD_TOAST_NOTICATION]({
-  id: uuidv4(),
-  title: '2nd',
-  duration: 5_000,
-});
-
-notificationStore[EUseNotificationsStoreActions.ADD_TOAST_NOTICATION]({
-  id: uuidv4(),
-  title: '3nd',
-  duration: 10_000,
-});
 </script>
 
 <style lang="scss" scoped>
 @use '@/styles/abstracts/_mixins.scss' as mixins;
 
 .toast-manager {
-  position: absolute;
-  z-index: 1000;
   @include mixins.flex-display;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 20px;
-  height: calc(100dvh - 40px);
+
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  z-index: 1000;
 
   pointer-events: none;
 
-  top: 0;
-  right: 0;
+  padding: 20px;
   gap: 10px;
+  height: calc(100dvh - 40px);
 }
 
 .toast-wrapper {
