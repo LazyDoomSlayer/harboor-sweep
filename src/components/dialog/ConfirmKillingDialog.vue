@@ -34,6 +34,10 @@ import useKillProcess from '@/composables/useKillProcess';
 import { usePortProcessesStore } from '@/store/port-processes.store';
 import { EUsePortProcessesStoreActions } from '@/types/store/port-processes.types';
 
+import { v4 as uuidv4 } from 'uuid';
+import { useNotificationsStore } from '@/store/notifications.store';
+import { EUseNotificationsStoreActions } from '@/types/store/notifications.types';
+
 const dialogStore = useDialogsStore();
 const { confirmKillingDialog } = storeToRefs(dialogStore);
 
@@ -46,6 +50,7 @@ function closeAndRevertToDefaults(): void {
 const { isLoading, kill } = useKillProcess();
 
 const portProcessesStore = usePortProcessesStore();
+const notificationStore = useNotificationsStore();
 
 async function submitKilling(): Promise<void> {
   const pid = confirmKillingDialog.value.process?.pid;
@@ -63,6 +68,15 @@ async function submitKilling(): Promise<void> {
       ]();
 
       closeAndRevertToDefaults();
+      notificationStore[EUseNotificationsStoreActions.ADD_TOAST_NOTICATION]({
+        id: uuidv4(),
+        title: `Success: Process with pid: ${pid} , has been killed successfully.`,
+      });
+    } else {
+      notificationStore[EUseNotificationsStoreActions.ADD_TOAST_NOTICATION]({
+        id: uuidv4(),
+        title: `Error: Could not kill process with pid: ${pid}.`,
+      });
     }
   } catch (error) {
     console.error(error);
