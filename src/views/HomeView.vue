@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import PortProcessesTable from '@/components/PortProcessesTable.vue';
 import ConfirmKillingDialog from '@/components/dialog/ConfirmKillingDialog.vue';
+import ToastNotificationManager from '@/components/notifications/ToastNotificationManager.vue';
 
 import { usePortProcessesStore } from '@/store/port-processes.store';
 import {
@@ -30,6 +31,7 @@ onMounted(async () => {
 
 <template>
   <ConfirmKillingDialog />
+  <ToastNotificationManager />
 
   <PortProcessesTable :list="computedProcesses" />
 </template>
