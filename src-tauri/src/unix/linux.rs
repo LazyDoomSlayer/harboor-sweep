@@ -1,10 +1,11 @@
 use crate::common::{KillProcessResponse, PortInfo, ProcessInfo, ProcessInfoResponse};
 
+use std::collections::hash_map::DefaultHasher;
 use std::collections::HashSet;
 use std::fs;
+use std::hash::{Hash, Hasher};
 use std::path::PathBuf;
 use std::process::Command;
-use uuid::Uuid;
 
 pub fn fetch_ports() -> Result<Vec<PortInfo>, String> {
     let output = Command::new("lsof")
@@ -54,7 +55,7 @@ fn parse_lsof_output(output: &str) -> Result<Vec<PortInfo>, String> {
 
         if seen.insert((pid, port)) {
             ports.push(PortInfo {
-                id: Uuid::new_v4().to_string(),
+                id: generate_unique_id(pid, port, parts[0]),
                 pid,
                 process_name: parts[0].to_string(),
                 port,
@@ -65,6 +66,14 @@ fn parse_lsof_output(output: &str) -> Result<Vec<PortInfo>, String> {
     }
 
     Ok(ports)
+}
+
+fn generate_unique_id(pid: u32, port: u16, process_name: &str) -> String {
+    let mut hasher = DefaultHasher::new();
+    pid.hash(&mut hasher);
+    port.hash(&mut hasher);
+    process_name.hash(&mut hasher);
+    format!("{:x}", hasher.finish())
 }
 
 fn get_process_path(pid: u32) -> Result<String, String> {
