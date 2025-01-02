@@ -178,12 +178,14 @@ function resetFiltration(): void {
     margin: 16px 6px 6px 6px;
   }
   &__filters {
+    @include mixins.flex-display;
     gap: 6px;
+    margin-right: 6px;
     flex-grow: 1;
 
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    margin-right: 6px;
+    & > div {
+      width: 25%;
+    }
   }
 }
 </style>
