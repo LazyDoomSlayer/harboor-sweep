@@ -5,6 +5,7 @@ pub struct PortInfo {
     pub pid: u32,
     pub process_name: String,
     pub process_path: String,
+    pub is_listener: bool,
 }
 
 #[derive(serde::Serialize, Debug)]

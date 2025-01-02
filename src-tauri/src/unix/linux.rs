@@ -6,19 +6,6 @@ use std::path::PathBuf;
 use std::process::Command;
 use uuid::Uuid;
 
-fn get_process_path(pid: u32) -> Result<String, String> {
-    let exe_path = format!("/proc/{}/exe", pid);
-    fs::read_link(&exe_path)
-        .map(|path| path.to_string_lossy().to_string())
-        .map_err(|err| {
-            if err.kind() == std::io::ErrorKind::PermissionDenied {
-                "Permission Denied".to_string()
-            } else {
-                "Unknown".to_string()
-            }
-        })
-}
-
 pub fn fetch_ports() -> Result<Vec<PortInfo>, String> {
     let output = Command::new("lsof")
         .args(["-i", "-P", "-n"])
@@ -63,18 +50,37 @@ fn parse_lsof_output(output: &str) -> Result<Vec<PortInfo>, String> {
             Err(err) => err,
         };
 
-        if seen.insert((pid, port.clone())) {
+        let is_listener = parts.get(9).map_or(false, |state| state.contains("LISTEN"));
+
+        if seen.insert((pid, port)) {
             ports.push(PortInfo {
                 id: Uuid::new_v4().to_string(),
                 pid,
                 process_name: parts[0].to_string(),
                 port,
                 process_path,
+                is_listener,
             });
         }
     }
 
     Ok(ports)
+}
+
+fn get_process_path(pid: u32) -> Result<String, String> {
+    let exe_path = format!("/proc/{}/exe", pid);
+    match std::fs::read_link(&exe_path) {
+        Ok(path) => Ok(path.to_string_lossy().to_string()),
+        Err(err) => {
+            if err.kind() == std::io::ErrorKind::PermissionDenied {
+                Err("Permission Denied".to_string())
+            } else if err.kind() == std::io::ErrorKind::NotFound {
+                Err("Process not found".to_string())
+            } else {
+                Err("Unknown error".to_string())
+            }
+        }
+    }
 }
 
 pub fn kill_process(pid: u32) -> KillProcessResponse {
