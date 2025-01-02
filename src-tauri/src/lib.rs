@@ -4,7 +4,10 @@ mod state;
 
 use state::AppState;
 
-use commands::{fetch_ports, kill_process, start_monitoring, stop_monitoring, update_interval};
+use commands::{
+    fetch_ports, get_processes_using_port, kill_process, start_monitoring, stop_monitoring,
+    update_interval,
+};
 
 #[cfg(target_family = "unix")]
 pub mod unix;
@@ -21,7 +24,8 @@ pub fn run() {
             kill_process,
             start_monitoring,
             stop_monitoring,
-            update_interval
+            update_interval,
+            get_processes_using_port
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -1,4 +1,4 @@
-use crate::common::{KillProcessResponse, PortInfo};
+use crate::common::{KillProcessResponse, PortInfo, ProcessInfoResponse};
 use crate::state::AppState;
 
 use std::sync::{Arc, Mutex};
@@ -84,5 +84,13 @@ pub fn kill_process(pid: u32) -> KillProcessResponse {
     #[cfg(target_family = "unix")]
     {
         unix::kill_process(pid)
+    }
+}
+
+#[tauri::command]
+pub fn get_processes_using_port(port: u16, item_pid: u32) -> Result<ProcessInfoResponse, String> {
+    #[cfg(target_family = "unix")]
+    {
+        unix::get_processes_using_port(port, item_pid)
     }
 }

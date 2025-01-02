@@ -23,6 +23,8 @@
     </div>
 
     <div class="process-table-header__process-path">Process Path</div>
+    <div class="process-table-header__state">State</div>
+
     <div class="process-table-header__actions">Actions</div>
   </div>
 </template>
@@ -73,10 +75,13 @@ function changeSorting(key: keyof TPortProcessItem): void {
     width: 10%;
   }
   &__process-name {
-    width: 30%;
+    width: 20%;
   }
   &__process-path {
     width: 40%;
+  }
+  &__state {
+    width: 10%;
   }
   &__actions {
     width: 10%;

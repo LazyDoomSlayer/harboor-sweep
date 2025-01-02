@@ -1,21 +1,10 @@
-use crate::common::{KillProcessResponse, PortInfo};
+use crate::common::{KillProcessResponse, PortInfo, ProcessInfo, ProcessInfoResponse};
+
 use std::collections::HashSet;
 use std::fs;
+use std::path::PathBuf;
 use std::process::Command;
 use uuid::Uuid;
-
-fn get_process_path(pid: u32) -> Result<String, String> {
-    let exe_path = format!("/proc/{}/exe", pid);
-    fs::read_link(&exe_path)
-        .map(|path| path.to_string_lossy().to_string())
-        .map_err(|err| {
-            if err.kind() == std::io::ErrorKind::PermissionDenied {
-                "Permission Denied".to_string()
-            } else {
-                "Unknown".to_string()
-            }
-        })
-}
 
 pub fn fetch_ports() -> Result<Vec<PortInfo>, String> {
     let output = Command::new("lsof")
@@ -61,18 +50,37 @@ fn parse_lsof_output(output: &str) -> Result<Vec<PortInfo>, String> {
             Err(err) => err,
         };
 
-        if seen.insert((pid, port.clone())) {
+        let is_listener = parts.get(9).map_or(false, |state| state.contains("LISTEN"));
+
+        if seen.insert((pid, port)) {
             ports.push(PortInfo {
                 id: Uuid::new_v4().to_string(),
                 pid,
                 process_name: parts[0].to_string(),
                 port,
                 process_path,
+                is_listener,
             });
         }
     }
 
     Ok(ports)
+}
+
+fn get_process_path(pid: u32) -> Result<String, String> {
+    let exe_path = format!("/proc/{}/exe", pid);
+    match std::fs::read_link(&exe_path) {
+        Ok(path) => Ok(path.to_string_lossy().to_string()),
+        Err(err) => {
+            if err.kind() == std::io::ErrorKind::PermissionDenied {
+                Err("Permission Denied".to_string())
+            } else if err.kind() == std::io::ErrorKind::NotFound {
+                Err("Process not found".to_string())
+            } else {
+                Err("Unknown error".to_string())
+            }
+        }
+    }
 }
 
 pub fn kill_process(pid: u32) -> KillProcessResponse {
@@ -101,4 +109,88 @@ pub fn kill_process(pid: u32) -> KillProcessResponse {
             message: format!("Failed to execute kill command: {}", e),
         },
     }
+}
+
+pub fn get_processes_using_port(port: u16, item_pid: u32) -> Result<ProcessInfoResponse, String> {
+    let output = Command::new("lsof")
+        .arg("-i")
+        .arg(format!(":{}", port))
+        .output()
+        .map_err(|e| format!("Failed to execute lsof command: {}", e))?;
+
+    if !output.status.success() {
+        return Err(format!(
+            "lsof command failed with status {}: {}",
+            output.status,
+            String::from_utf8_lossy(&output.stderr)
+        ));
+    }
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+
+    for line in stdout.lines() {
+        let fields: Vec<&str> = line.split_whitespace().collect();
+
+        if fields.len() < 10 {
+            continue;
+        }
+
+        let pid: u32 = match fields[1].parse() {
+            Ok(pid) => pid,
+            Err(_) => continue,
+        };
+
+        let address_port = fields[8];
+        let state = fields[9];
+
+        if !state.contains("LISTEN") {
+            continue;
+        }
+
+        let parsed_port: u16 = match address_port.split(':').last().unwrap_or_default().parse() {
+            Ok(port) => port,
+            Err(_) => continue,
+        };
+
+        if parsed_port != port {
+            continue;
+        }
+
+        if pid == item_pid {
+            return Ok(ProcessInfoResponse {
+                is_listener: true,
+                data: None,
+            });
+        }
+
+        if let Some(process_info) = get_process_info(pid, port) {
+            return Ok(ProcessInfoResponse {
+                is_listener: false,
+                data: Some(process_info),
+            });
+        }
+    }
+
+    Err(format!("No processes found listening on port {}", port))
+}
+
+fn get_process_info(pid: u32, port: u16) -> Option<ProcessInfo> {
+    let proc_path = PathBuf::from(format!("/proc/{}/", pid));
+
+    let process_name = fs::read_to_string(proc_path.join("comm"))
+        .ok()?
+        .trim()
+        .to_string();
+
+    let process_path = fs::read_link(proc_path.join("exe"))
+        .ok()?
+        .to_string_lossy()
+        .to_string();
+
+    Some(ProcessInfo {
+        pid,
+        port,
+        process_name,
+        process_path,
+    })
 }
