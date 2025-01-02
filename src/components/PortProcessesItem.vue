@@ -6,13 +6,18 @@
     :style="computedStyleObject"
     class="process-item"
   >
-    <div class="process-item__pid text-clamp">{{ props.process.pid }}</div>
+    <div class="process-item__pid text-clamp">
+      {{ props.process.pid }}
+    </div>
     <div class="process-item__port text-clamp">{{ props.process.port }}</div>
     <div class="process-item__process-name text-clamp">
       {{ props.process.process_name }}
     </div>
     <div class="process-item__process-path text-clamp">
       {{ props.process.process_path }}
+    </div>
+    <div class="process-item__state">
+      {{ props.process.is_listener ? 'Listen' : 'Estabilished' }}
     </div>
     <div class="process-item__actions">
       <BaseButton text="KILL" @left-clicked="killProcess" />
@@ -98,10 +103,13 @@ async function checkPort(): Promise<void> {
     width: 10%;
   }
   &__process-name {
-    width: 30%;
+    width: 20%;
   }
   &__process-path {
     width: 40%;
+  }
+  &__state {
+    width: 10%;
   }
   &__actions {
     width: 10%;

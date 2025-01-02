@@ -1,6 +1,7 @@
 export interface IPort {
   id: string;
   port: string;
+  is_listener: boolean;
 }
 
 export interface IProcess {
