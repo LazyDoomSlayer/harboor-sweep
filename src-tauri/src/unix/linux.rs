@@ -1,4 +1,5 @@
-use crate::common::{KillProcessResponse, PortInfo, ProcessInfo};
+use crate::common::{KillProcessResponse, PortInfo, ProcessInfo, ProcessInfoResponse};
+
 use std::collections::HashSet;
 use std::fs;
 use std::path::PathBuf;
@@ -104,7 +105,7 @@ pub fn kill_process(pid: u32) -> KillProcessResponse {
     }
 }
 
-pub fn get_processes_using_port(port: u16) -> Result<Vec<ProcessInfo>, String> {
+pub fn get_processes_using_port(port: u16, item_pid: u32) -> Result<ProcessInfoResponse, String> {
     let output = Command::new("lsof")
         .arg("-i")
         .arg(format!(":{}", port))
@@ -120,61 +121,70 @@ pub fn get_processes_using_port(port: u16) -> Result<Vec<ProcessInfo>, String> {
     }
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    let mut processes = vec![];
 
     for line in stdout.lines() {
-        if line.contains("LISTEN") {
-            let fields: Vec<&str> = line.split_whitespace().collect();
+        let fields: Vec<&str> = line.split_whitespace().collect();
 
-            if fields.len() < 9 {
-                continue;
-            }
+        if fields.len() < 10 {
+            continue;
+        }
 
-            let pid: u32 = match fields[1].parse() {
-                Ok(pid) => pid,
-                Err(_) => continue,
-            };
+        let pid: u32 = match fields[1].parse() {
+            Ok(pid) => pid,
+            Err(_) => continue,
+        };
 
-            if let Some(process_info) = get_process_info(pid, port) {
-                processes.push(process_info);
-            }
+        let address_port = fields[8];
+        let state = fields[9];
+
+        if !state.contains("LISTEN") {
+            continue;
+        }
+
+        let parsed_port: u16 = match address_port.split(':').last().unwrap_or_default().parse() {
+            Ok(port) => port,
+            Err(_) => continue,
+        };
+
+        if parsed_port != port {
+            continue;
+        }
+
+        if pid == item_pid {
+            return Ok(ProcessInfoResponse {
+                is_listener: true,
+                data: None,
+            });
+        }
+
+        if let Some(process_info) = get_process_info(pid, port) {
+            return Ok(ProcessInfoResponse {
+                is_listener: false,
+                data: Some(process_info),
+            });
         }
     }
 
-    if processes.is_empty() {
-        return Err(format!("No processes found listening on port {}", port));
-    }
-
-    Ok(processes)
+    Err(format!("No processes found listening on port {}", port))
 }
 
 fn get_process_info(pid: u32, port: u16) -> Option<ProcessInfo> {
     let proc_path = PathBuf::from(format!("/proc/{}/", pid));
 
-    let name = fs::read_to_string(proc_path.join("comm"))
+    let process_name = fs::read_to_string(proc_path.join("comm"))
         .ok()?
         .trim()
         .to_string();
 
-    let path = fs::read_link(proc_path.join("exe"))
+    let process_path = fs::read_link(proc_path.join("exe"))
         .ok()?
         .to_string_lossy()
         .to_string();
 
-    let status = fs::read_to_string(proc_path.join("status")).ok()?;
-    let parent_pid = status
-        .lines()
-        .find(|line| line.starts_with("PPid:"))?
-        .split_whitespace()
-        .nth(1)?
-        .parse::<u32>()
-        .ok();
-
     Some(ProcessInfo {
         pid,
         port,
-        name,
-        path,
-        parent_pid,
+        process_name,
+        process_path,
     })
 }

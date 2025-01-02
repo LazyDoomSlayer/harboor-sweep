@@ -1,4 +1,4 @@
-use crate::common::{KillProcessResponse, PortInfo, ProcessInfo};
+use crate::common::{KillProcessResponse, PortInfo, ProcessInfoResponse};
 use crate::state::AppState;
 
 use std::sync::{Arc, Mutex};
@@ -88,9 +88,9 @@ pub fn kill_process(pid: u32) -> KillProcessResponse {
 }
 
 #[tauri::command]
-pub fn get_processes_using_port(port: u16) -> Result<Vec<ProcessInfo>, String> {
+pub fn get_processes_using_port(port: u16, item_pid: u32) -> Result<ProcessInfoResponse, String> {
     #[cfg(target_family = "unix")]
     {
-        unix::get_processes_using_port(port)
+        unix::get_processes_using_port(port, item_pid)
     }
 }
