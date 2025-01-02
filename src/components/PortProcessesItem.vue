@@ -61,12 +61,13 @@ const { confirmKillingDialog } = storeToRefs(dialogStore);
 import { invoke } from '@tauri-apps/api/core';
 
 async function checkPort(): Promise<void> {
-  const port = props.process.port;
+  const { port, pid } = props.process;
 
   try {
-    console.log('before invoke', port);
+    console.log('before invoke', port, pid);
     const response = await invoke('get_processes_using_port', {
       port,
+      itemPid: pid,
     });
     console.log('response', response);
   } catch (error) {
