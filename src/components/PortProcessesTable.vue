@@ -38,11 +38,13 @@ import BaseLabeledBox from '@/components/base/BaseLabeledBox.vue';
 import type { TPortProcessItem, TPortProcessList } from '@/types';
 import { EScrollBehavior } from '@/types/virtual-list.types';
 import { ref } from 'vue';
+import { getCssVariable } from '@/utils/theme-helper';
 
 const ITEM_HEIGHT: number = 32;
-const boxBackgroundColor = '#ffffff';
-const boxColor = '#3e3e3e';
-const boxActiveColor = '#fab700';
+
+const boxBackgroundColor = getCssVariable('main-background-color');
+const boxColor = getCssVariable('base-label-border-passive-color');
+const boxActiveColor = getCssVariable('dialog-active-color');
 
 const props = defineProps<{
   list: TPortProcessList;
@@ -67,6 +69,7 @@ const virtualListRef = ref();
     &-wrapper {
       margin-top: 12px;
       max-height: calc(100dvh - 68px - 58px - 38px - 12px) !important;
+      height: 100%;
     }
   }
 }

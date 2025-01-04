@@ -42,14 +42,17 @@
 </template>
 
 <script setup lang="ts">
-import { usePortProcessesStore } from '@/store/port-processes.store';
-import { ESorting, type TPortProcessItem } from '@/types';
-import { storeToRefs } from 'pinia';
 import BaseLabeledBox from './base/BaseLabeledBox.vue';
 
-const boxBackgroundColor = '#ffffff';
-const boxColor = '#3e3e3e';
-const boxActiveColor = '#fab700';
+import { storeToRefs } from 'pinia';
+import { usePortProcessesStore } from '@/store/port-processes.store';
+
+import { ESorting, type TPortProcessItem } from '@/types';
+import { getCssVariable } from '@/utils/theme-helper';
+
+const boxBackgroundColor = getCssVariable('main-background-color');
+const boxColor = getCssVariable('base-label-border-passive-color');
+const boxActiveColor = getCssVariable('dialog-active-color');
 
 const portProcessesStore = usePortProcessesStore();
 const { sorting } = storeToRefs(portProcessesStore);
@@ -67,9 +70,11 @@ function changeSorting(key: keyof TPortProcessItem): void {
 
 <style lang="scss" scoped>
 @use '@/styles/abstracts/_mixins.scss' as mixins;
+@use '@/styles/abstracts/_variables.scss' as variables;
 
 .process-table-header {
   @include mixins.flex-display;
+  color: variables.get-color('base-label-border-passive-color');
 
   > div {
     height: 32px;
@@ -78,23 +83,28 @@ function changeSorting(key: keyof TPortProcessItem): void {
     @include mixins.flex-display;
 
     align-items: center;
-    cursor: pointer;
+    > span {
+      margin-left: 4px;
+    }
   }
 
   &__pid {
     width: 10%;
+    cursor: pointer;
   }
   &__port {
     width: 10%;
+    cursor: pointer;
   }
   &__process-name {
-    width: 20%;
+    width: 15%;
+    cursor: pointer;
   }
   &__process-path {
     width: 40%;
   }
   &__state {
-    width: 10%;
+    width: 15%;
   }
   &__actions {
     width: 10%;
