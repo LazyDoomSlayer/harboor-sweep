@@ -13,6 +13,7 @@ import {
   EUsePortProcessesStoreActions,
   EUsePortProcessesStoreGetters,
 } from '@/types/store/port-processes.types';
+import type { TPortProcessItem, TPortProcessList } from '@/types';
 
 import { getCssVariable } from '@/utils/theme-helper';
 
@@ -44,7 +45,7 @@ const computedProcesses = computed(() => {
   const processes: TPortProcessList =
     portProcessesStore[EUsePortProcessesStoreGetters.GET_SORTED_PROCESSES];
 
-  return processes.filter((process) => {
+  return processes.filter((process: TPortProcessItem) => {
     const pidMatch = process.pid
       .toString()
       .startsWith(pidModel.value.toString());
@@ -63,7 +64,7 @@ const computedProcesses = computed(() => {
   });
 });
 
-function focusOnTextField(elementReference: unknown): void {
+function focusOnTextField(elementReference: typeof BaseTextField): void {
   try {
     elementReference.focusField();
   } catch (error) {
