@@ -12,9 +12,9 @@
   "app": {
     "windows": [
       {
-        "title": "harbor-sweep",
+        "title": "Haboor Sweep",
         "minWidth": 1024,
-        "minHeight": 658,
+        "minHeight": 768,
         "theme": "Dark"
       }
     ],
@@ -24,7 +24,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["rpm", "deb", "msi"],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
