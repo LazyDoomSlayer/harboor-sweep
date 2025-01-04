@@ -54,9 +54,8 @@ const computedLabelStyle = computed(() => {
     </div>
 
     <!-- Content -->
-    <div class="status-box__content">
-      <slot name="content"></slot>
-    </div>
+
+    <slot name="content"></slot>
   </div>
 </template>
 
@@ -67,7 +66,7 @@ const computedLabelStyle = computed(() => {
   position: relative;
   border: 2px solid;
   border-radius: 8px;
-  padding: 12px;
+  padding: 14px 8px 8px 8px;
 
   @include mixins.transition-all('medium');
 
@@ -84,16 +83,6 @@ const computedLabelStyle = computed(() => {
     border-radius: 4px;
 
     @include mixins.transition-all('medium');
-  }
-
-  &__content {
-    @include mixins.flex-display;
-    gap: 8px;
-
-    font-size: 16px;
-    height: 100%;
-
-    color: white;
   }
 }
 </style>

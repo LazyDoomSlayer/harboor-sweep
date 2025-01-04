@@ -13,8 +13,9 @@
     "windows": [
       {
         "title": "harbor-sweep",
-        "width": 800,
-        "height": 600
+        "minWidth": 1024,
+        "minHeight": 658,
+        "theme": "Dark"
       }
     ],
     "security": {

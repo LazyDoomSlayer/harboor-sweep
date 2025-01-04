@@ -16,11 +16,15 @@
     <div class="process-item__process-path text-clamp">
       {{ props.process.process_path }}
     </div>
-    <div class="process-item__state">
+    <div class="process-item__state text-clamp">
       {{ props.process.is_listener ? 'Listen' : 'Estabilished' }}
     </div>
     <div class="process-item__actions">
-      <BaseButton text="KILL" @left-clicked="killProcess" />
+      <BaseButton
+        text="Kill"
+        @left-clicked="killProcess"
+        :background-color="buttonBackgroundColor"
+      />
       <BaseButton text="Details" @left-clicked="checkPort" />
     </div>
   </div>
@@ -42,10 +46,12 @@ const props = defineProps<{
 
 const elementId = shallowRef<string>(`process-item_${props.process.id}`);
 
+const hoveredBackgroundColor = getCssVariable('main-background-color-selected');
+const buttonBackgroundColor = getCssVariable('negative-color');
 const computedStyleObject = computed<CSSProperties>(() => {
   return {
     height: `${props.maxItemHeight}px`,
-    backgroundColor: isHoveredOn.value ? '#e4e4e4' : 'transparent',
+    backgroundColor: isHoveredOn.value ? hoveredBackgroundColor : 'transparent',
   };
 });
 
@@ -64,6 +70,7 @@ function killProcess(): void {
 const dialogStore = useDialogsStore();
 const { confirmKillingDialog } = storeToRefs(dialogStore);
 import { invoke } from '@tauri-apps/api/core';
+import { getCssVariable } from '@/utils/theme-helper';
 
 async function checkPort(): Promise<void> {
   const { port, pid } = props.process;
@@ -83,6 +90,7 @@ async function checkPort(): Promise<void> {
 
 <style lang="scss" scoped>
 @use '@/styles/abstracts/_mixins.scss' as mixins;
+@use '@/styles/abstracts/_variables.scss' as variables;
 
 .process-item {
   @include mixins.flex-display;
@@ -91,7 +99,8 @@ async function checkPort(): Promise<void> {
   flex-grow: 1;
   align-items: center;
 
-  border-bottom: 1px solid #3e3e3e;
+  border-bottom: 1px solid variables.get-color('branch-mode-background-color');
+  color: variables.get-color('base-label-border-passive-color');
 
   > div {
     padding: 0px 6px;
@@ -103,13 +112,13 @@ async function checkPort(): Promise<void> {
     width: 10%;
   }
   &__process-name {
-    width: 20%;
+    width: 15%;
   }
   &__process-path {
     width: 40%;
   }
   &__state {
-    width: 10%;
+    width: 15%;
   }
   &__actions {
     width: 10%;

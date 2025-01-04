@@ -4,6 +4,9 @@ import ConfirmKillingDialog from '@/components/dialog/ConfirmKillingDialog.vue';
 import ToastNotificationManager from '@/components/notifications/ToastNotificationManager.vue';
 import BaseTextField from '@/components/base/BaseTextField.vue';
 import BaseLabeledBox from '@/components/base/BaseLabeledBox.vue';
+import BaseButton from '@/components/base/BaseButton.vue';
+
+import { computed, onMounted, ref } from 'vue';
 
 import { usePortProcessesStore } from '@/store/port-processes.store';
 import {
@@ -11,8 +14,7 @@ import {
   EUsePortProcessesStoreGetters,
 } from '@/types/store/port-processes.types';
 
-import { computed, onMounted, ref } from 'vue';
-import BaseButton from '@/components/base/BaseButton.vue';
+import { getCssVariable } from '@/utils/theme-helper';
 
 const portProcessesStore = usePortProcessesStore();
 
@@ -22,9 +24,9 @@ onMounted(async () => {
   ]();
 });
 
-const boxBackgroundColor = '#ffffff';
-const boxColor = '#3e3e3e';
-const boxActiveColor = '#fab700';
+const boxBackgroundColor = getCssVariable('main-background-color');
+const boxColor = getCssVariable('base-label-border-passive-color');
+const boxActiveColor = getCssVariable('dialog-active-color');
 
 const pidModel = ref<string>('');
 const pidTextFieldRef = ref();
@@ -178,12 +180,14 @@ function resetFiltration(): void {
     margin: 16px 6px 6px 6px;
   }
   &__filters {
+    @include mixins.flex-display;
     gap: 6px;
+    margin-right: 6px;
     flex-grow: 1;
 
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    margin-right: 6px;
+    & > div {
+      width: 25%;
+    }
   }
 }
 </style>

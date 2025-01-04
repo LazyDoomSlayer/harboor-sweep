@@ -1,3 +1,5 @@
+@use '../abstracts/_variables.scss' as variables;
+
 * {
   pointer-events: auto;
 }
@@ -10,7 +12,8 @@ body,
   height: 100dvh;
   width: 100dvw;
   overflow: hidden;
-  background-color: #f6f6f6;
+
+  background-color: variables.get-color('main-background-color');
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -25,6 +28,7 @@ body,
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   -webkit-line-clamp: 1;
+  word-break: break-all;
 }
 
 .disabled-state {

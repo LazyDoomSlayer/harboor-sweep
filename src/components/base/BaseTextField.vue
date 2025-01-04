@@ -41,6 +41,7 @@ defineExpose({
 
 <style lang="scss" scoped>
 @use '@/styles/abstracts/_mixins.scss' as mixins;
+@use '@/styles/abstracts/_variables.scss' as variables;
 
 .text-field {
   width: 100%;
@@ -54,7 +55,8 @@ defineExpose({
     border: none;
     outline: none;
 
-    color: black;
+    color: variables.get-color('base-label-border-passive-color');
+
     background-color: transparent;
   }
 }

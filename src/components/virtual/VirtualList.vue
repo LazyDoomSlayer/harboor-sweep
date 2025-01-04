@@ -47,13 +47,17 @@ defineExpose({
     ref="virtualList"
     :style="virtualListStyle"
     class="recycle-scroller"
+    key-field="id"
     :items="componentProps.list"
     :item-size="componentProps.itemHeight"
-    key-field="id"
     v-slot="{ item }"
   >
     <slot name="item" :item="item"></slot>
   </RecycleScroller>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.recycle-scroller {
+  height: 100%;
+}
+</style>

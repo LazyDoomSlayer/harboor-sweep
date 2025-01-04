@@ -30,6 +30,7 @@
 <script setup lang="ts">
 import { computed, type CSSProperties } from 'vue';
 import CircleSpinner from '../loaders/CircleSpinner.vue';
+import { getCssVariable } from '@/utils/theme-helper';
 
 interface IProps {
   isDisabled?: boolean;
@@ -37,6 +38,9 @@ interface IProps {
   prependIcon?: string;
   appendIcon?: string;
   text: string;
+
+  backgroundColor?: string;
+  textColor?: string;
 }
 
 const componentProps = withDefaults(defineProps<IProps>(), {});
@@ -46,9 +50,13 @@ const emit = defineEmits<{
   (e: 'rightClicked', event: MouseEvent): void;
 }>();
 
+const defaultTextColor = getCssVariable('base-label-border-passive-color');
+const defaultBackgroundColor = getCssVariable('link-text-color');
 const computedStyleObject = computed<CSSProperties>(() => {
   return {
     cursor: componentProps.isDisabled ? 'default' : 'pointer',
+    backgroundColor: componentProps.backgroundColor ?? defaultBackgroundColor,
+    color: componentProps.textColor ?? defaultTextColor,
   };
 });
 
@@ -73,5 +81,9 @@ button {
   justify-content: center;
 
   align-items: center;
+  border-radius: 6px;
+
+  outline: none;
+  border: none;
 }
 </style>
