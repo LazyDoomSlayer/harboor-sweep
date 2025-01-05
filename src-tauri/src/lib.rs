@@ -12,6 +12,9 @@ use commands::{
 #[cfg(target_family = "unix")]
 pub mod unix;
 
+#[cfg(target_family = "windows")]
+pub mod windows;
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let app_state = AppState::new(5);

@@ -8,6 +8,9 @@ use tauri::{AppHandle, Emitter, State};
 #[cfg(target_family = "unix")]
 use crate::unix;
 
+#[cfg(target_family = "windows")]
+use crate::windows;
+
 #[tauri::command]
 pub fn start_monitoring(app_handle: AppHandle, app_state: State<AppState>) -> Result<(), String> {
     if app_state.is_monitoring() {
@@ -92,5 +95,10 @@ pub fn get_processes_using_port(port: u16, item_pid: u32) -> Result<ProcessInfoR
     #[cfg(target_family = "unix")]
     {
         unix::get_processes_using_port(port, item_pid)
+    }
+
+    #[cfg(target_family = "windows")]
+    {
+        windows::get_processes_using_port(port, item_pid)
     }
 }
