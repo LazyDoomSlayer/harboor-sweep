@@ -52,6 +52,11 @@ fn fetch_ports_by_os() -> Result<Vec<PortInfo>, String> {
     {
         unix::fetch_ports()
     }
+
+    #[cfg(target_family = "windows")]
+    {
+        windows::fetch_ports()
+    }
 }
 
 #[tauri::command]
@@ -80,6 +85,11 @@ pub fn fetch_ports() -> Result<Vec<PortInfo>, String> {
     {
         unix::fetch_ports()
     }
+
+    #[cfg(target_family = "windows")]
+    {
+        windows::fetch_ports()
+    }
 }
 
 #[tauri::command]
@@ -87,6 +97,11 @@ pub fn kill_process(pid: u32) -> KillProcessResponse {
     #[cfg(target_family = "unix")]
     {
         unix::kill_process(pid)
+    }
+
+    #[cfg(target_family = "windows")]
+    {
+        windows::kill_process(pid)
     }
 }
 
