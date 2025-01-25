@@ -3,17 +3,23 @@ use windows::Win32::NetworkManagement::IpHelper::{
     GetExtendedTcpTable, GetExtendedUdpTable, TCP_TABLE_OWNER_PID_ALL, UDP_TABLE_OWNER_PID,
     MIB_TCPTABLE_OWNER_PID, MIB_TCP6TABLE_OWNER_PID, MIB_UDPTABLE_OWNER_PID, MIB_UDP6TABLE_OWNER_PID
 };
-use windows::Win32::System::Threading::{OpenProcess, TerminateProcess};
+use windows::Win32::System::Threading::{OpenProcess, TerminateProcess, PROCESS_QUERY_INFORMATION, PROCESS_VM_READ};
 use windows::Win32::Foundation::{CloseHandle, ERROR_ACCESS_DENIED};
 use windows::Win32::System::Threading::PROCESS_TERMINATE;
+
+use windows::Win32::System::ProcessStatus::{K32GetModuleBaseNameW, K32GetModuleFileNameExW};
+
+use std::ffi::OsString;
+use std::os::windows::ffi::OsStringExt;
+use std::collections::hash_map::DefaultHasher;
+use std::hash::{Hash, Hasher};
+
 
 use crate::common::{KillProcessResponse, PortInfo};
 
 
-// TCP State Constants
 const TCP_STATE_LISTEN: u32 = 2;
 
-/// Enum to represent the protocol and address family
 #[derive(Debug)]
 enum Protocol {
     TcpIpv4,
@@ -22,7 +28,6 @@ enum Protocol {
     UdpIpv6,
 }
 
-/// Function to determine the required buffer size for TCP/UDP tables
 fn get_buffer_size(protocol: &Protocol) -> Option<u32> {
     let mut buffer_size = 0u32;
 
@@ -34,7 +39,7 @@ fn get_buffer_size(protocol: &Protocol) -> Option<u32> {
             Protocol::UdpIpv6 => GetExtendedUdpTable(None, &mut buffer_size, false, 23, UDP_TABLE_OWNER_PID, 0),
         };
 
-        if result == 122 { // ERROR_INSUFFICIENT_BUFFER
+        if result == 122 {
             Some(buffer_size)
         } else {
             println!("Unexpected result during first call: {}", result);
@@ -43,9 +48,7 @@ fn get_buffer_size(protocol: &Protocol) -> Option<u32> {
     }
 }
 
-/// Function to retrieve the TCP/UDP table
 fn fetch_table(protocol: &Protocol, buffer_size: u32) -> Option<Vec<u8>> {
-    // Allocate the buffer with the required size
     let mut buffer = vec![0u8; buffer_size as usize];
 
     unsafe {
@@ -57,8 +60,8 @@ fn fetch_table(protocol: &Protocol, buffer_size: u32) -> Option<Vec<u8>> {
         };
 
         if result == NO_ERROR.0 {
-            println!("Successfully retrieved the table for protocol: {:?}", protocol);
-            Some(buffer) // Return the buffer containing the table data
+            // println!("Successfully retrieved the table for protocol: {:?}", protocol);
+            Some(buffer)
         } else {
             println!("Failed to retrieve table for protocol: {:?}. Error code: {}", protocol, result);
             None
@@ -66,46 +69,44 @@ fn fetch_table(protocol: &Protocol, buffer_size: u32) -> Option<Vec<u8>> {
     }
 }
 
-use std::collections::hash_map::DefaultHasher;
-use std::hash::{Hash, Hasher};
 
-/// Generate a unique ID by hashing the pid and port
 fn generate_unique_id(pid: u32, port: u16) -> String {
     let mut hasher = DefaultHasher::new();
     pid.hash(&mut hasher);
     port.hash(&mut hasher);
-    format!("{:x}", hasher.finish()) // Convert the hash to a hexadecimal string
+    format!("{:x}", hasher.finish())
 }
 
 
 
-/// Parse the TCP/IPv4 table buffer into a list of PortInfo
 fn parse_tcp_ipv4(buffer: &[u8]) -> Vec<PortInfo> {
     let mut results = Vec::new();
 
     unsafe {
-        // Interpret the buffer as a pointer to MIB_TCPTABLE_OWNER_PID
         let table = &*(buffer.as_ptr() as *const MIB_TCPTABLE_OWNER_PID);
-        let rows = table.table.as_ptr(); // Pointer to the array of MIB_TCPROW_OWNER_PID
-        let count = table.dwNumEntries; // Number of entries in the table
+        let rows = table.table.as_ptr();
+        let count = table.dwNumEntries;
 
         for i in 0..count {
-            let row = &*rows.add(i as usize); // Access each row
+            let row = &*rows.add(i as usize);
 
-            // Convert the port from big-endian
             let port = u16::from_be(row.dwLocalPort as u16);
 
-            // Generate the unique ID
             let id = generate_unique_id(row.dwOwningPid, port);
 
-            // Extract data for PortInfo
+            let (process_name, process_path) = match get_process_info(row.dwOwningPid) {
+                Some((process_name, process_path)) => (process_name, process_path),
+                None => (String::from("Unknown"), String::from("Unknown")),
+            };
+
+
             let port_info = PortInfo {
-                id, // Set the generated unique ID
-                port, // Convert port from big-endian
+                id,
+                port,
+                process_name,
+                process_path,
                 pid: row.dwOwningPid,
-                process_name: String::new(), // Placeholder (to be retrieved later)
-                process_path: String::new(), // Placeholder (to be retrieved later)
-                is_listener: row.dwState == TCP_STATE_LISTEN, // Check if state is LISTEN
+                is_listener: row.dwState == TCP_STATE_LISTEN,
             };
 
 
@@ -120,34 +121,35 @@ fn parse_tcp_ipv4(buffer: &[u8]) -> Vec<PortInfo> {
 }
 
 
-/// Parse the TCP/IPv6 table buffer into a list of PortInfo
 fn parse_tcp_ipv6(buffer: &[u8]) -> Vec<PortInfo> {
     let mut results = Vec::new();
 
     unsafe {
-        // Interpret the buffer as a pointer to MIB_TCP6TABLE_OWNER_PID
         let table = &*(buffer.as_ptr() as *const MIB_TCP6TABLE_OWNER_PID);
-        let rows = table.table.as_ptr(); // Pointer to the array of MIB_TCP6ROW_OWNER_PID
-        let count = table.dwNumEntries; // Number of entries in the table
+        let rows = table.table.as_ptr();
+        let count = table.dwNumEntries;
 
         for i in 0..count {
-            let row = &*rows.add(i as usize); // Access each row
+            let row = &*rows.add(i as usize);
 
 
-            // Convert the port from big-endian
             let port = u16::from_be(row.dwLocalPort as u16);
 
-            // Generate the unique ID
             let id = generate_unique_id(row.dwOwningPid, port);
 
-            // Extract data for PortInfo
+            let (process_name, process_path) = match get_process_info(row.dwOwningPid) {
+                Some((process_name, process_path)) => (process_name, process_path),
+                None => (String::from("Unknown"), String::from("Unknown")),
+            };
+
+
             let port_info = PortInfo {
                 id,
                 port,
+                process_name,
+                process_path,
                 pid: row.dwOwningPid,
-                process_name: String::new(), // Placeholder (to be retrieved later)
-                process_path: String::new(), // Placeholder (to be retrieved later)
-                is_listener: row.dwState == TCP_STATE_LISTEN, // Check if state is LISTEN
+                is_listener: row.dwState == TCP_STATE_LISTEN,
             };
 
 
@@ -163,34 +165,34 @@ fn parse_tcp_ipv6(buffer: &[u8]) -> Vec<PortInfo> {
 
 
 
-/// Parse the UDP/IPv4 table buffer into a list of PortInfo
 fn parse_udp_ipv4(buffer: &[u8]) -> Vec<PortInfo> {
     let mut results = Vec::new();
 
     unsafe {
-        // Interpret the buffer as a pointer to MIB_UDPTABLE_OWNER_PID
         let table = &*(buffer.as_ptr() as *const MIB_UDPTABLE_OWNER_PID);
-        let rows = table.table.as_ptr(); // Pointer to the array of MIB_UDPROW_OWNER_PID
-        let count = table.dwNumEntries; // Number of entries in the table
+        let rows = table.table.as_ptr();
+        let count = table.dwNumEntries;
 
         for i in 0..count {
-            let row = &*rows.add(i as usize); // Access each row
+            let row = &*rows.add(i as usize);
 
 
-            // Convert the port from big-endian
             let port = u16::from_be(row.dwLocalPort as u16);
 
-            // Generate the unique ID
             let id = generate_unique_id(row.dwOwningPid, port);
 
-            // Extract data for PortInfo
+            let (process_name, process_path) = match get_process_info(row.dwOwningPid) {
+                Some((process_name, process_path)) => (process_name, process_path),
+                None => (String::from("Unknown"), String::from("Unknown")),
+            };
+
             let port_info = PortInfo {
                 id,
                 port,
+                process_name,
+                process_path,
                 pid: row.dwOwningPid,
-                process_name: String::new(), // Placeholder (to be retrieved later)
-                process_path: String::new(), // Placeholder (to be retrieved later)
-                is_listener: false,         // UDP does not have a LISTEN state
+                is_listener: false,
             };
 
 
@@ -206,33 +208,33 @@ fn parse_udp_ipv4(buffer: &[u8]) -> Vec<PortInfo> {
 
 
 
-/// Parse the UDP/IPv6 table buffer into a list of PortInfo
 fn parse_udp_ipv6(buffer: &[u8]) -> Vec<PortInfo> {
     let mut results = Vec::new();
 
     unsafe {
-        // Interpret the buffer as a pointer to MIB_UDP6TABLE_OWNER_PID
         let table = &*(buffer.as_ptr() as *const MIB_UDP6TABLE_OWNER_PID);
-        let rows = table.table.as_ptr(); // Pointer to the array of MIB_UDP6ROW_OWNER_PID
-        let count = table.dwNumEntries; // Number of entries in the table
+        let rows = table.table.as_ptr();
+        let count = table.dwNumEntries;
 
         for i in 0..count {
-            let row = &*rows.add(i as usize); // Access each row
+            let row = &*rows.add(i as usize);
 
-            // Convert the port from big-endian
             let port = u16::from_be(row.dwLocalPort as u16);
 
-            // Generate the unique ID
             let id = generate_unique_id(row.dwOwningPid, port);
 
-            // Extract data for PortInfo
+            let (process_name, process_path) = match get_process_info(row.dwOwningPid) {
+                Some((process_name, process_path)) => (process_name, process_path),
+                None => (String::from("Unknown"), String::from("Unknown")),
+            };
+
             let port_info = PortInfo {
                 id,
                 port,
+                process_name,
+                process_path,
                 pid: row.dwOwningPid,
-                process_name: String::new(), // Placeholder (to be retrieved later)
-                process_path: String::new(), // Placeholder (to be retrieved later)
-                is_listener: false,         // UDP does not have a LISTEN state
+                is_listener: false,
             };
 
 
@@ -247,7 +249,6 @@ fn parse_udp_ipv6(buffer: &[u8]) -> Vec<PortInfo> {
 }
 
 
-/// Retrieve and parse all TCP and UDP connections
 pub fn fetch_ports() -> Result<Vec<crate::common::PortInfo>, String> {
     let protocols = [
         Protocol::TcpIpv4,
@@ -300,12 +301,10 @@ pub fn fetch_ports() -> Result<Vec<crate::common::PortInfo>, String> {
 
 pub fn kill_process(pid: u32) -> KillProcessResponse {
     unsafe {
-        // Try to open the process with terminate access
         match OpenProcess(PROCESS_TERMINATE, false, pid) {
             Ok(process_handle) => {
-                // Try to terminate the process
                 let terminate_result = TerminateProcess(process_handle, 1);
-                let _ = CloseHandle(process_handle); // Ensure the handle is closed regardless of the result
+                let _ = CloseHandle(process_handle);
 
                 match terminate_result {
                     Ok(()) => KillProcessResponse {
@@ -333,5 +332,52 @@ pub fn kill_process(pid: u32) -> KillProcessResponse {
                 ),
             },
         }
+    }
+}
+
+
+
+pub fn get_process_info(pid: u32) -> Option<(String, String)> {
+    unsafe {
+        let process_handle = OpenProcess(
+            PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
+            false,
+            pid,
+        ).ok()?;
+
+        let mut name_buffer = vec![0u16; 256];
+        let mut path_buffer = vec![0u16; 1024];
+
+        let name_len = K32GetModuleBaseNameW(
+            Some(process_handle)?,
+            None,
+            &mut name_buffer,
+        );
+
+        let process_name = if name_len > 0 {
+            OsString::from_wide(&name_buffer[..name_len as usize])
+                .to_string_lossy()
+                .into_owned()
+        } else {
+            String::new()
+        };
+
+        let path_len = K32GetModuleFileNameExW(
+            Some(process_handle),
+            None,
+            &mut path_buffer,
+        );
+
+        let process_path = if path_len > 0 {
+            OsString::from_wide(&path_buffer[..path_len as usize])
+                .to_string_lossy()
+                .into_owned()
+        } else {
+            String::new()
+        };
+
+        let _ = CloseHandle(process_handle);
+
+        Some((process_name, process_path))
     }
 }
