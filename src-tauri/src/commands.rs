@@ -1,4 +1,4 @@
-use crate::common::{KillProcessResponse, PortInfo, ProcessInfoResponse};
+use crate::common::{KillProcessResponse, PortInfo, ProcessInfoResponse, ProcessInfo};
 use crate::state::AppState;
 
 use std::sync::{Arc, Mutex};
@@ -7,6 +7,9 @@ use tauri::{AppHandle, Emitter, State};
 
 #[cfg(target_family = "unix")]
 use crate::unix;
+
+#[cfg(target_family = "windows")]
+use crate::windows;
 
 #[tauri::command]
 pub fn start_monitoring(app_handle: AppHandle, app_state: State<AppState>) -> Result<(), String> {
@@ -49,6 +52,10 @@ fn fetch_ports_by_os() -> Result<Vec<PortInfo>, String> {
     {
         unix::fetch_ports()
     }
+    #[cfg(target_family = "windows")]
+    {
+        windows::fetch_ports()
+    }
 }
 
 #[tauri::command]
@@ -77,6 +84,10 @@ pub fn fetch_ports() -> Result<Vec<PortInfo>, String> {
     {
         unix::fetch_ports()
     }
+    #[cfg(target_family = "windows")]
+    {
+        windows::fetch_ports()
+    }
 }
 
 #[tauri::command]
@@ -85,6 +96,10 @@ pub fn kill_process(pid: u32) -> KillProcessResponse {
     {
         unix::kill_process(pid)
     }
+    #[cfg(target_family = "windows")]
+    {
+        windows::kill_process(pid)
+    }
 }
 
 #[tauri::command]
@@ -92,5 +107,17 @@ pub fn get_processes_using_port(port: u16, item_pid: u32) -> Result<ProcessInfoR
     #[cfg(target_family = "unix")]
     {
         unix::get_processes_using_port(port, item_pid)
+    }
+    #[cfg(target_family = "windows")]
+    {
+        return Ok(ProcessInfoResponse {
+            is_listener: false,
+            data: Some(ProcessInfo {
+                pid: 5678,
+                port,
+                process_name: "mocked_process.exe".to_string(),
+                process_path: item_pid.to_string(),
+            }),
+        })
     }
 }
