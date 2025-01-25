@@ -1,4 +1,4 @@
-use crate::common::{KillProcessResponse, PortInfo, ProcessInfoResponse, ProcessInfo};
+use crate::common::{KillProcessResponse, PortInfo, ProcessInfoResponse};
 use crate::state::AppState;
 
 use std::sync::{Arc, Mutex};
@@ -118,6 +118,7 @@ pub fn get_processes_using_port(port: u16, item_pid: u32) -> Result<ProcessInfoR
                 process_name: "mocked_process.exe".to_string(),
                 process_path: item_pid.to_string(),
             }),
-        })
+        });
     }
 }
+
