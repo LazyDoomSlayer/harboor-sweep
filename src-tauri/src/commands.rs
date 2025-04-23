@@ -1,4 +1,4 @@
-use crate::common::{KillProcessResponse, PortInfo, ProcessInfoResponse};
+use crate::common::{KillProcessResponse, PortInfo, ProcessInfoResponse, ProcessInfo};
 use crate::state::AppState;
 
 use std::sync::{Arc, Mutex};
