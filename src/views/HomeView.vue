@@ -16,6 +16,7 @@ import {
 import type { TPortProcessItem, TPortProcessList } from '@/types';
 
 import { getCssVariable } from '@/utils/theme-helper';
+import TheApplicationWindow from '@/components/v2/TheApplicationWindow.vue';
 
 const portProcessesStore = usePortProcessesStore();
 
@@ -84,61 +85,69 @@ function resetFiltration(): void {
   <ConfirmKillingDialog />
   <ToastNotificationManager />
 
-  <section style="display: flex; flex-direction: column; height: 100%">
+  <TheApplicationWindow />
+  <section
+    style="
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      margin-top: 40px;
+    "
+  >
     <div class="port-processes-filtration__wrapper">
       <div class="port-processes-filtration__filters">
         <BaseLabeledBox
+          :active-color="boxActiveColor"
           :background-color="boxBackgroundColor"
           :color="boxColor"
-          :active-color="boxActiveColor"
           :is-active="!!pidModel.length"
           @click.left="focusOnTextField(pidTextFieldRef)"
         >
           <template #label>PID</template>
           <template #content>
             <BaseTextField
+              ref="pidTextFieldRef"
               v-model="pidModel"
               placeholder="0001"
-              ref="pidTextFieldRef"
             />
           </template>
         </BaseLabeledBox>
         <BaseLabeledBox
+          :active-color="boxActiveColor"
           :background-color="boxBackgroundColor"
           :color="boxColor"
-          :active-color="boxActiveColor"
           :is-active="!!portModel.length"
           @click.left="focusOnTextField(portTextFieldRef)"
         >
           <template #label>Port</template>
           <template #content>
             <BaseTextField
+              ref="portTextFieldRef"
               v-model="portModel"
               placeholder="3000"
-              ref="portTextFieldRef"
             />
           </template>
         </BaseLabeledBox>
         <BaseLabeledBox
+          :active-color="boxActiveColor"
           :background-color="boxBackgroundColor"
           :color="boxColor"
-          :active-color="boxActiveColor"
           :is-active="!!processNameModel.length"
           @click.left="focusOnTextField(processNameTextFieldRef)"
         >
           <template #label>Process Name</template>
           <template #content>
             <BaseTextField
+              ref="processNameTextFieldRef"
               v-model.trim="processNameModel"
               placeholder="node"
-              ref="processNameTextFieldRef"
             />
           </template>
         </BaseLabeledBox>
         <BaseLabeledBox
+          :active-color="boxActiveColor"
           :background-color="boxBackgroundColor"
           :color="boxColor"
-          :active-color="boxActiveColor"
           :is-active="!!processPathModel.length"
           @click.left="focusOnTextField(processPathTextFieldRef)"
         >
@@ -154,7 +163,7 @@ function resetFiltration(): void {
       </div>
       <BaseButton text="Reset Filtration" @left-clicked="resetFiltration" />
     </div>
-    <PortProcessesTable style="flex-grow: 1" :list="computedProcesses" />
+    <PortProcessesTable :list="computedProcesses" style="flex-grow: 1" />
   </section>
 </template>
 
@@ -180,6 +189,7 @@ function resetFiltration(): void {
 
     margin: 16px 6px 6px 6px;
   }
+
   &__filters {
     @include mixins.flex-display;
     gap: 6px;
