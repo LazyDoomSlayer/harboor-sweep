@@ -1,10 +1,10 @@
 <template>
   <div
-    @mouseenter="updateHoverStatus(true)"
-    @mouseleave="updateHoverStatus(false)"
     :id="elementId"
     :style="computedStyleObject"
     class="process-item"
+    @mouseenter="updateHoverStatus(true)"
+    @mouseleave="updateHoverStatus(false)"
   >
     <div class="process-item__pid text-clamp">
       {{ props.process.pid }}
@@ -21,23 +21,25 @@
     </div>
     <div class="process-item__actions">
       <BaseButton
+        :background-color="buttonBackgroundColor"
         text="Kill"
         @left-clicked="killProcess"
-        :background-color="buttonBackgroundColor"
       />
-      <BaseButton text="Details" @left-clicked="checkPort" />
+      <!--      <BaseButton text="Details" @left-clicked="checkPort" />-->
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import BaseButton from '@/components/base/BaseButton.vue';
 
 import type { TPortProcessItem } from '@/types';
-import { computed, shallowRef, type CSSProperties, ref, toRaw } from 'vue';
+import { computed, type CSSProperties, ref, shallowRef, toRaw } from 'vue';
 
 import { storeToRefs } from 'pinia';
 import { useDialogsStore } from '@/store/dialogs.store';
+import { invoke } from '@tauri-apps/api/core';
+import { getCssVariable } from '@/utils/theme-helper';
 
 const props = defineProps<{
   process: TPortProcessItem;
@@ -56,6 +58,7 @@ const computedStyleObject = computed<CSSProperties>(() => {
 });
 
 const isHoveredOn = ref<boolean>(false);
+
 function updateHoverStatus(hovered: boolean): void {
   isHoveredOn.value = hovered === true;
 }
@@ -69,8 +72,6 @@ function killProcess(): void {
 
 const dialogStore = useDialogsStore();
 const { confirmKillingDialog } = storeToRefs(dialogStore);
-import { invoke } from '@tauri-apps/api/core';
-import { getCssVariable } from '@/utils/theme-helper';
 
 async function checkPort(): Promise<void> {
   const { port, pid } = props.process;
@@ -105,24 +106,31 @@ async function checkPort(): Promise<void> {
   > div {
     padding: 0px 6px;
   }
+
   &__pid {
     width: 10%;
   }
+
   &__port {
     width: 10%;
   }
+
   &__process-name {
     width: 15%;
   }
+
   &__process-path {
     width: 40%;
   }
+
   &__state {
     width: 15%;
   }
+
   &__actions {
     width: 10%;
     @include mixins.flex-display;
+    justify-content: flex-end;
     gap: 4px;
   }
 }

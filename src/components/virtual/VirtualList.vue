@@ -1,6 +1,9 @@
 <script lang="ts" setup>
+// @ts-expect-error remove type issues
+
 import { computed, type CSSProperties, ref } from 'vue';
 import { EScrollBehavior, type IProps } from '@/types/virtual-list.types';
+import { UseVirtualList } from '@vueuse/components';
 
 const componentProps = withDefaults(defineProps<IProps>(), {
   scrollBehavior: EScrollBehavior.AUTO,
@@ -10,6 +13,10 @@ const virtualListStyle = computed<CSSProperties>(() => {
   return {
     scrollBehavior: componentProps.scrollBehavior,
   };
+});
+const computedList = computed(() => {
+  console.log(' componentProps.list', componentProps.list);
+  return componentProps.list;
 });
 
 const virtualList = ref();
@@ -31,7 +38,7 @@ function goToStart(): void {
 }
 
 function goToBottom(): void {
-  goToElementWithIndex(componentProps.list.length - 1);
+  goToElementWithIndex(computedList.value.length - 1);
 }
 
 defineExpose({
@@ -43,17 +50,15 @@ defineExpose({
 </script>
 
 <template>
-  <RecycleScroller
-    ref="virtualList"
-    :style="virtualListStyle"
-    class="recycle-scroller"
-    key-field="id"
-    :items="componentProps.list"
-    :item-size="componentProps.itemHeight"
-    v-slot="{ item }"
+  <UseVirtualList
+    :list="computedList"
+    :options="{ itemHeight: 32 }"
+    height="100%"
   >
-    <slot name="item" :item="item"></slot>
-  </RecycleScroller>
+    <template #default="props">
+      <slot :item="props.data" name="item"></slot>
+    </template>
+  </UseVirtualList>
 </template>
 
 <style lang="scss" scoped>

@@ -1,9 +1,6 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 
-// @ts-expect-error Library related warning
-import { RecycleScroller } from 'vue-virtual-scroller';
-
 // Fonts
 import '@fontsource/jetbrains-mono/400.css';
 import '@fontsource/jetbrains-mono/800.css';
@@ -22,6 +19,5 @@ const app = createApp(App);
 
 app.use(createPinia());
 app.use(router);
-app.component('RecycleScroller', RecycleScroller);
 
 app.mount('#app');
