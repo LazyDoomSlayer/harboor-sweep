@@ -23,7 +23,67 @@
   transition: all #{$speed-value} #{$type-value};
 }
 
+@mixin default-font {
+  font-family: 'JetBrains Mono', monospace, Inter, Avenir, Helvetica, Arial, sans-serif;
+}
+
+@mixin default-icon-font {
+  font-family: 'Material Icons', 'sans-serif';
+}
+
+@mixin flex-display {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+@mixin flex-block {
+  display: block;
+}
+
+@mixin flex-inline-block {
+  display: -moz-inline-block;
+  display: inline-block;
+}
+
+@mixin flex-direction-column {
+  flex-direction: column;
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+}
+
+@mixin flex-direction-row {
+  flex-direction: row;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+}
+
+@mixin justify-content-center {
+  justify-content: center;
+  -webkit-justify-content: center;
+}
+
+@mixin justify-content-space-between {
+  justify-content: space-between;
+  -webkit-justify-content: space-between;
+}
+
 @mixin disable-user-selection {
   user-select: none;
   pointer-events: none;
 }
+
+@mixin hide-text-overflow {
+  word-break: break-all;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+}
+
+@mixin default-disabled-state {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+}
+

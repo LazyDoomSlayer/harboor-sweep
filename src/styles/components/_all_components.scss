@@ -1,4 +1,13 @@
 @use '@/styles/abstracts/_variables.scss' as variables;
+@use '../abstracts/_mixins.scss' as mixins;
+
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #777 transparent;
+}
+
 
 .spacer {
   flex-grow: 1;
@@ -27,8 +36,16 @@
   background: linear-gradient(180deg, #777, #aaa); /* Slightly lighter on hover */
 }
 
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #777 transparent;
+
+.hide-text-overflow-line-1 {
+  @include mixins.hide-text-overflow;
+  -webkit-line-clamp: 1;
+}
+
+.default-disabled-state {
+  @include mixins.default-disabled-state;
+}
+
+.flex-grow {
+  flex-grow: 1;
 }

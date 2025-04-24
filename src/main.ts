@@ -7,6 +7,7 @@ import '@fontsource/jetbrains-mono/800.css';
 
 import 'material-icons/iconfont/outlined.css';
 import 'material-symbols/outlined.css';
+import 'material-symbols/rounded.css';
 
 // Styles
 import '@/styles/main.scss';
