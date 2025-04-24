@@ -91,7 +91,7 @@ function resetFiltration(): void {
       display: flex;
       flex-direction: column;
       height: 100%;
-      margin-top: 40px;
+      margin-top: 60px;
     "
   >
     <div class="port-processes-filtration__wrapper">
