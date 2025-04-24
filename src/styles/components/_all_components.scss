@@ -1,5 +1,34 @@
+@use '@/styles/abstracts/_variables.scss' as variables;
+
 .spacer {
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: 0;
+}
+
+
+/* Base styling for the scroller */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent !important; /* Dark track */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #555, #888); /* Subtle gradient */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #777, #aaa); /* Slightly lighter on hover */
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #777 transparent;
 }
