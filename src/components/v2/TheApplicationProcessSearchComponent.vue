@@ -22,12 +22,17 @@ function handleKeydown(event: KeyboardEvent) {
     event.preventDefault();
     applicationStore.searchComponentOpen =
       !applicationStore.searchComponentOpen;
-    
-    if (!applicationStore.searchComponentOpen) {
-      searchModel.value = '';
-    }
   }
 }
+
+watch(
+  () => applicationStore.searchComponentOpen,
+  (value) => {
+    if (!value) {
+      searchModel.value = '';
+    }
+  },
+);
 
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown);
@@ -36,18 +41,13 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeydown);
 });
-
-function closeAndClear() {
-  applicationStore.searchComponentOpen = false;
-  searchModel.value = '';
-}
 </script>
 
 <template>
   <div
     v-if="applicationStore.searchComponentOpen"
     class="dropdown-content"
-    @keydown.esc="closeAndClear"
+    @keydown.esc="applicationStore.searchComponentOpen = false"
   >
     <div class="search-bar">
       <span class="material-symbols-outlined search-icon"> search </span>

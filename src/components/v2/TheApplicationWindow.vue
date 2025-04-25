@@ -144,11 +144,10 @@ const applicationStore = useApplicationStore();
   padding: 4px 6px;
 
   border: none;
-  border-bottom: 2px solid transparent;
   border-radius: 6px;
 
   color: white;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
 
   outline: 1px solid transparent;
@@ -184,7 +183,7 @@ const applicationStore = useApplicationStore();
     'wght' 400,
     'GRAD' 0,
     'opsz' 16;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .titlebar__tab-wrapper {
