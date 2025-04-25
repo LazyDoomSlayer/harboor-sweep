@@ -9,12 +9,13 @@ html,
 body,
 #app {
   padding: 0;
+  margin: 0;
 
   height: 100dvh;
   width: 100dvw;
 
   overflow: hidden !important;
-  background-color: variables.get-color('main-background-color');
+  background-color: var(--main-bg);
 
   @include mixins.default-font;
   font-synthesis: none;
@@ -31,32 +32,26 @@ html {
 }
 
 :root {
-  --main-bg: #222436;
-  --main-bg-selected: #2f334d;
-  --main-bg-overlayed: #141520;
+  --main-bg: #1d1d20;
 
-  --cmd-title-color: #86e1fc;
-  --cmd-shortcut-color: #f39069;
+  --text-active: #e0e0e0;
+  --text-inactive: #555557;
 
-  --cmd-selected-bg: #ffffff;
-  --cmd-selected-text: #1e1e1e;
+  --main-button-bg: #343436;
+  --main-element-focused: #5a82b6;
 
-  --dialog-bg: #222436;
-  --dialog-border: #589ed7;
-  --dialog-active: #ff966c;
+  --main-input-bg: #343436;
+  --text-main-input-label: #a4a4a5;
+  --text-main-input: #e3e3e3;
+  --main-input-icon: #c1c1c2;
 
-  --label-border-passive: #c8d3f5;
-  --link-text: #9277c5;
-  --text-active: #82aaff;
 
-  --branch-mode-bg: #3b4261;
+  --text-process-list-header: #777779;
+  --text-process-list-header-hovered: #bbbbbc;
+  --process-list-header-icon: #3b3b3e;
 
-  --skill-selected-bg: #2d3f76;
-  --color-positive: #33d17a;
-  --color-negative: #f66151;
-
-  --editor-line-text: #3b4261;
-  --editor-line-current: #ff966c;
+  --process-list-item-bg: #1d1d20;
+  --process-list-item-bg-focused: #233751;
 }
 
 

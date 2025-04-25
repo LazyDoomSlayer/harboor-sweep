@@ -125,11 +125,11 @@ const applicationStore = useApplicationStore();
     }
 
     &:hover {
-      background-color: var(--main-bg-selected);
+      background-color: var(--main-button-bg);
     }
 
     &:focus-visible {
-      outline-color: var(--dialog-border);
+      outline-color: var(--main-element-focused);
     }
   }
 }
@@ -169,7 +169,7 @@ const applicationStore = useApplicationStore();
   }
 
   &:focus-visible {
-    outline-color: var(--dialog-border);
+    outline-color: var(--main-element-focused);
     outline-offset: 2px;
   }
 

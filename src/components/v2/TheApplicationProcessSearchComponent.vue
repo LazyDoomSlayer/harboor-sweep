@@ -8,7 +8,7 @@ const applicationStore = useApplicationStore();
   <Transition name="dropdown">
     <div v-if="applicationStore.searchComponentOpen" class="dropdown-content">
       <div class="search-bar">
-        <span class="material-symbols-outlined"> search </span>
+        <span class="material-symbols-outlined search-icon"> search </span>
         <input
           class="search-input"
           placeholder="Search ports and process names"
@@ -57,15 +57,27 @@ const applicationStore = useApplicationStore();
   align-items: center;
   max-height: 36px;
   width: 300px;
-  background-color: #f1f1f1;
-  border: 2px solid #85a8d9; // Adjust to match the blue in your image
-  border-radius: 9999px; // fully rounded
+
+  background-color: var(--main-input-bg);
+  border-radius: 6px;
   padding: 2px;
+  color: var(--text-main-input-label);
+  @include mixins.transition-all('medium');
+
+  &:focus-visible {
+    color: var(--text-main-input);
+    outline-color: var(--main-element-focused);
+  }
 
   .search-icon {
-    font-size: 16px;
-    color: #555;
-    margin-right: 8px;
+    font-size: 18px;
+    color: var(--main-input-icon);
+    margin: 0 4px;
+    @include mixins.transition-all('medium');
+
+    &:hover {
+      color: var(--text-main-input);
+    }
   }
 
   .search-input {
@@ -73,11 +85,11 @@ const applicationStore = useApplicationStore();
     outline: none;
     background: transparent;
     font-size: 14px;
-    color: #333;
+    color: var(--text-main-input);
     width: 100%;
 
     &::placeholder {
-      color: #888;
+      color: var(--text-main-input-label);
     }
   }
 }
