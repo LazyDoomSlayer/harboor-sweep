@@ -40,6 +40,13 @@ export const usePortProcessesStore = defineStore('port-processes', () => {
         return (valueA - valueB) * (direction === ESorting.ASCENDING ? 1 : -1);
       }
 
+      if (typeof valueA === 'boolean' && typeof valueB === 'boolean') {
+        return (
+          (Number(valueA) - Number(valueB)) *
+          (direction === ESorting.ASCENDING ? 1 : -1)
+        );
+      }
+
       return 0;
     });
   });

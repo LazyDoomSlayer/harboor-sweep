@@ -22,8 +22,24 @@
       </span>
     </div>
 
-    <div class="process-table-header__process-path">Process Path</div>
-    <div class="process-table-header__state">State</div>
+    <div
+      class="process-table-header__process-path"
+      @click.left="changeSorting('process_path')"
+    >
+      Process Path
+      <span v-if="sorting.key === 'process_path'">
+        {{ sorting.direction === ESorting.ASCENDING ? '↑' : '↓' }}
+      </span>
+    </div>
+    <div
+      class="process-table-header__state"
+      @click.left="changeSorting('is_listener')"
+    >
+      State
+      <span v-if="sorting.key === 'is_listener'">
+        {{ sorting.direction === ESorting.ASCENDING ? '↑' : '↓' }}
+      </span>
+    </div>
   </div>
 </template>
 
@@ -32,10 +48,6 @@ import { storeToRefs } from 'pinia';
 import { usePortProcessesStore } from '@/store/port-processes.store';
 
 import { ESorting, type TPortProcessItem } from '@/types';
-
-// const boxBackgroundColor = getCssVariable('main-background-color');
-// const boxColor = getCssVariable('base-label-border-passive-color');
-// const boxActiveColor = getCssVariable('dialog-active-color');
 
 const portProcessesStore = usePortProcessesStore();
 const { sorting } = storeToRefs(portProcessesStore);
@@ -68,6 +80,9 @@ function changeSorting(key: keyof TPortProcessItem): void {
 
     align-items: center;
     font-size: 12px;
+
+    user-select: none;
+    -webkit-user-select: none;
 
     &:hover {
       color: var(--text-process-list-header-hovered);
