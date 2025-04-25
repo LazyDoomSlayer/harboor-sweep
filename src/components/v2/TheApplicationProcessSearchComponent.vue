@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useApplicationStore } from '@/store/application.store.ts';
-import { nextTick, useTemplateRef, watch } from 'vue';
+import { nextTick, onMounted, onUnmounted, useTemplateRef, watch } from 'vue';
 
 const applicationStore = useApplicationStore();
 const searchModel = defineModel({ default: '' });
@@ -16,10 +16,39 @@ watch(
     }
   },
 );
+
+function handleKeydown(event: KeyboardEvent) {
+  if (event.ctrlKey && event.key === 'f') {
+    event.preventDefault();
+    applicationStore.searchComponentOpen =
+      !applicationStore.searchComponentOpen;
+    
+    if (!applicationStore.searchComponentOpen) {
+      searchModel.value = '';
+    }
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown);
+});
+
+function closeAndClear() {
+  applicationStore.searchComponentOpen = false;
+  searchModel.value = '';
+}
 </script>
 
 <template>
-  <div v-if="applicationStore.searchComponentOpen" class="dropdown-content">
+  <div
+    v-if="applicationStore.searchComponentOpen"
+    class="dropdown-content"
+    @keydown.esc="closeAndClear"
+  >
     <div class="search-bar">
       <span class="material-symbols-outlined search-icon"> search </span>
 
@@ -109,6 +138,7 @@ watch(
     }
 
     &::placeholder {
+      font-size: 12px;
       color: var(--text-main-input-label);
     }
   }
