@@ -8,7 +8,6 @@
 html,
 body,
 #app {
-  margin: 0;
   padding: 0;
 
   height: 100dvh;
@@ -24,6 +23,11 @@ body,
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
+}
+
+
+html {
+  margin: 40px 0 0;
 }
 
 :root {
