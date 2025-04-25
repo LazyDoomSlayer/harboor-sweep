@@ -4,3 +4,8 @@
 
 @use './abstracts/_mixins.scss';
 @use './components/_all_components.scss';
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-inactive) transparent;
+}

@@ -16,27 +16,6 @@
 }
 
 
-/* Base styling for the scroller */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent !important; /* Dark track */
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #555, #888); /* Subtle gradient */
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #777, #aaa); /* Slightly lighter on hover */
-}
-
-
 .hide-text-overflow-line-1 {
   @include mixins.hide-text-overflow;
   -webkit-line-clamp: 1;
