@@ -3,11 +3,8 @@
     :style="{ height: `${computedVirtualListHeight}px` }"
     class="port-process-table"
   >
-    <!--    32px  -->
     <V2PortProcessListHeader />
-    <span style="color: red; position: absolute; z-index: 312312">
-      {{ computedVirtualListHeight }}
-    </span>
+
     <VirtualList
       v-if="computedVirtualListHeight > 0"
       ref="virtualListRef"
@@ -40,10 +37,6 @@ import { usePortProcessesStore } from '@/store/port-processes.store.ts';
 
 const ITEM_HEIGHT: number = 20;
 
-// const boxBackgroundColor = getCssVariable('main-background-color');
-// const boxColor = getCssVariable('base-label-border-passive-color');
-// const boxActiveColor = getCssVariable('dialog-active-color');
-
 const applicationStore = useApplicationStore();
 const portProcessesStore = usePortProcessesStore();
 const PROCESS_LIST_HEADER_HEIGHT: number = 40;
@@ -64,17 +57,6 @@ const computedVirtualListHeight = computed(
     PROCESS_LIST_HEADER_HEIGHT -
     searchComponentHeight.value,
 );
-// const computedListStyle = computed<CSSProperties>(() => {
-//   const spaceTaken =
-//     PROCESS_LIST_HEADER_HEIGHT +
-//     APPLICATION_WINDOW_HEIGHT +
-//     processsFooterHeight.value +
-//     searchComponentHeight.value;
-//
-//   return {
-//     height: `calc(100vh - ${spaceTaken}px)`,
-//   };
-// });
 
 const props = defineProps<{
   list: TPortProcessList;

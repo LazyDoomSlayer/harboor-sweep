@@ -1,7 +1,21 @@
 <script lang="ts" setup>
 import { useApplicationStore } from '@/store/application.store.ts';
+import { nextTick, useTemplateRef, watch } from 'vue';
 
 const applicationStore = useApplicationStore();
+const searchModel = defineModel({ default: '' });
+
+const inputRef = useTemplateRef<HTMLInputElement>('inputRef');
+
+watch(
+  () => applicationStore.searchComponentOpen,
+  async (isOpen) => {
+    if (isOpen) {
+      await nextTick();
+      inputRef.value?.focus();
+    }
+  },
+);
 </script>
 
 <template>
@@ -9,6 +23,8 @@ const applicationStore = useApplicationStore();
     <div class="search-bar">
       <span class="material-symbols-outlined search-icon"> search </span>
       <input
+        ref="inputRef"
+        v-model="searchModel"
         class="search-input"
         placeholder="Search PID, Port, Process name, Process path"
         type="text"
@@ -34,17 +50,18 @@ const applicationStore = useApplicationStore();
   display: flex;
   align-items: center;
   max-height: 36px;
-  width: 400px;
+  width: 410px;
 
   background-color: var(--main-input-bg);
   border-radius: 6px;
+  outline: 1px solid transparent;
+
   padding: 2px;
   color: var(--text-main-input-label);
   @include mixins.transition-all('medium');
 
-  &:focus-visible {
-    color: var(--text-main-input);
-    outline-color: var(--main-element-focused);
+  &:focus-within {
+    outline: 2px solid var(--main-element-focused);
   }
 
   .search-icon {
@@ -60,11 +77,15 @@ const applicationStore = useApplicationStore();
 
   .search-input {
     border: none;
-    outline: none;
     background: transparent;
     font-size: 14px;
     color: var(--text-main-input);
     width: 100%;
+    outline: none;
+
+    &:focus-visible .search-bar {
+      outline-color: var(--main-element-focused);
+    }
 
     &::placeholder {
       color: var(--text-main-input-label);

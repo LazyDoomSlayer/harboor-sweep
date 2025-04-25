@@ -134,12 +134,5 @@ function focusOnProcess() {
   &__state {
     width: 15%;
   }
-
-  //&__actions {
-  //  width: 10%;
-  //  @include mixins.flex-display;
-  //  justify-content: flex-end;
-  //  gap: 4px;
-  //}
 }
 </style>
