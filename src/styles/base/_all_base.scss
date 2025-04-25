@@ -23,7 +23,11 @@ body,
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
 
+#app {
+  display: flex;
+  flex-direction: column;
 }
 
 
@@ -33,6 +37,7 @@ html {
 
 :root {
   --main-bg: #1d1d20;
+  --main-divider-bg: #3f3f41;
 
   --text-active: #e0e0e0;
   --text-inactive: #555557;
@@ -53,6 +58,10 @@ html {
   --text-process-list-item: #ffffff;
   --process-list-item-bg: #1d1d20;
   --process-list-item-bg-focused: #233751;
+
+
+  --process-footer-bg: #2e2e32;
+  --process-footer-bg-inactive: #222226;
 }
 
 
