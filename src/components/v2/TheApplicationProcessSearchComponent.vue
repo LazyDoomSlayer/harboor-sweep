@@ -22,6 +22,7 @@ watch(
   <div v-if="applicationStore.searchComponentOpen" class="dropdown-content">
     <div class="search-bar">
       <span class="material-symbols-outlined search-icon"> search </span>
+
       <input
         ref="inputRef"
         v-model="searchModel"
@@ -29,6 +30,14 @@ watch(
         placeholder="Search PID, Port, Process name, Process path"
         type="text"
       />
+
+      <span
+        v-if="searchModel"
+        class="material-symbols-rounded clear-icon"
+        @click="searchModel = ''"
+      >
+        backspace
+      </span>
     </div>
   </div>
 </template>
@@ -68,6 +77,18 @@ watch(
     font-size: 18px;
     color: var(--main-input-icon);
     margin: 0 4px;
+    @include mixins.transition-all('medium');
+    cursor: pointer;
+
+    &:hover {
+      color: var(--text-main-input);
+    }
+  }
+
+  .clear-icon {
+    padding-right: 4px;
+    font-size: 18px;
+    cursor: pointer;
     @include mixins.transition-all('medium');
 
     &:hover {
