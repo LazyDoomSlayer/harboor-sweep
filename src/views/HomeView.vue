@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import ConfirmKillingDialog from '@/components/dialog/ConfirmKillingDialog.vue';
 import ToastNotificationManager from '@/components/notifications/ToastNotificationManager.vue';
+import TheApplicationWindow from '@/components/v2/TheApplicationWindow.vue';
+import TheApplicationProcessSearchComponent from '@/components/v2/TheApplicationProcessSearchComponent.vue';
+import TheApplicationProcessFooter from '@/components/v2/TheApplicationProcessFooter.vue';
+import V2PortProccessesList from '@/components/v2/V2PortProccessesList.vue';
 
 import { computed, onMounted, ref, useTemplateRef } from 'vue';
 
 import { usePortProcessesStore } from '@/store/port-processes.store';
 import type { TPortProcessItem, TPortProcessList } from '@/types';
-import TheApplicationWindow from '@/components/v2/TheApplicationWindow.vue';
-import TheApplicationProcessSearchComponent from '@/components/v2/TheApplicationProcessSearchComponent.vue';
-import TheApplicationProcessFooter from '@/components/v2/TheApplicationProcessFooter.vue';
 import { useElementSize } from '@vueuse/core';
-import V2PortProccessesList from '@/components/v2/V2PortProccessesList.vue';
 
 const portProcessesStore = usePortProcessesStore();
 
@@ -18,41 +18,21 @@ onMounted(async () => {
   await portProcessesStore.startPortProcessesObserver();
 });
 
-// const boxBackgroundColor = getCssVariable('main-background-color');
-// const boxColor = getCssVariable('base-label-border-passive-color');
-// const boxActiveColor = getCssVariable('dialog-active-color');
-
-const pidModel = ref<string>('');
-// const pidTextFieldRef = ref();
-
-const portModel = ref<string>('');
-// const portTextFieldRef = ref();
-
-const processNameModel = ref<string>('');
-// const processNameTextFieldRef = ref();
-
-const processPathModel = ref<string>('');
-// const processPathTextFieldRef = ref();
+const searchModel = ref<string>('');
 
 const computedProcesses = computed(() => {
   const processes: TPortProcessList = portProcessesStore.getSortedProcesses;
+  const searchValue = searchModel.value.toLowerCase().trim();
+
+  if (!searchValue) return processes;
 
   return processes.filter((process: TPortProcessItem) => {
-    const pidMatch = process.pid
-      .toString()
-      .startsWith(pidModel.value.toString());
-
-    const portMatch = process.port.toString().startsWith(portModel.value);
-
-    const processNameMatch = process.process_name
-      .toLowerCase()
-      .startsWith(processNameModel.value.toLowerCase());
-
-    const processPathMatch = process.process_path
-      .toLowerCase()
-      .startsWith(processPathModel.value.toLowerCase());
-
-    return pidMatch && portMatch && processNameMatch && processPathMatch;
+    return (
+      process.pid.toString().includes(searchValue) ||
+      process.port.toString().includes(searchValue) ||
+      process.process_name.toLowerCase().includes(searchValue) ||
+      process.process_path.toLowerCase().includes(searchValue)
+    );
   });
 });
 
@@ -73,30 +53,6 @@ const computedProcesses = computed(() => {
 
 const mainElementRef = useTemplateRef<HTMLElement>('mainElementRef');
 const { height: mainElementHeight } = useElementSize(mainElementRef);
-
-// const applicationWindowRef = useTemplateRef<HTMLElement>(
-//   'applicationWindowRef',
-// );
-// const { height: applicationWindowHeight } =
-//   useElementSize(applicationWindowRef);
-//
-// const applicationProcessFooterRef = ref<HTMLElement>();
-// const { height: applicationProcessFooterHeight } = useElementSize(
-//   applicationProcessFooterRef,
-// );
-//
-// const applicationContentSectionElementStyle = computed<CSSProperties>(() => {
-//   return {
-//     height: `${computedListHeight.value}px`,
-//   };
-// });
-// const PORT_PROCESS_LIST_HEIGHT: number = 32;
-// const computedListHeight = computed(
-//   () =>
-//     mainElementHeight.value -
-//     (applicationWindowHeight.value + applicationProcessFooterHeight.value) -
-//     PORT_PROCESS_LIST_HEIGHT,
-// );
 </script>
 
 <template>
@@ -106,7 +62,7 @@ const { height: mainElementHeight } = useElementSize(mainElementRef);
     <TheApplicationWindow ref="applicationWindowRef" />
 
     <main ref="mainElementRef" style="flex-grow: 1">
-      <TheApplicationProcessSearchComponent />
+      <TheApplicationProcessSearchComponent v-model="searchModel" />
       <V2PortProccessesList
         v-if="mainElementHeight > 0"
         :available-height="mainElementHeight"
@@ -115,25 +71,6 @@ const { height: mainElementHeight } = useElementSize(mainElementRef);
       <TheApplicationProcessFooter />
     </main>
   </div>
-  <!--  <div style="color: white">-->
-
-  <!--      <main ref="mainElementRef" style="flex-grow: 1">-->
-  <!--        <section-->
-  <!--          :style="{-->
-  <!--            maxHeight: `calc(${mainElementHeight}px - ${applicationProcessFooterHeight}px)`,-->
-  <!--          }"-->
-  <!--          style="height: 100%; display: flex; flex-direction: column"-->
-  <!--        >-->
-  <!--          {{ mainElementHeight }}-->
-  <!--          {{ applicationWindowHeight }}-->
-  <!--          {{ applicationProcessFooterHeight }}-->
-  <!-- -->
-  <!--        </section>-->
-  <!--      </main>-->
-
-  <!--  </div>-->
-
-  <!--    <PortProcessesTable :list="computedProcesses" style="flex-grow: 1" />-->
 
   <!--    <div class="port-processes-filtration__wrapper">-->
   <!--      <div class="port-processes-filtration__filters">-->
