@@ -51,7 +51,7 @@ function killProcess(): void {
   height: 40px;
   padding: 0 8px;
 
-  z-index: 100;
+  z-index: 4;
   user-select: none;
 
   border-top: 1px solid var(--main-divider-bg);

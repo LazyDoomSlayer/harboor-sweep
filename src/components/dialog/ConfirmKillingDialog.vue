@@ -1,30 +1,43 @@
 <template>
-  <Teleport to="body" v-if="confirmKillingDialog.opened">
+  <Teleport v-if="confirmKillingDialog.opened" to="body">
     <div class="dialog-overlay"></div>
     <div class="confirm-killing-dialog">
-      <h2>Kill the following process ?</h2>
-      <code>
-        <pre v-text="confirmKillingDialog.process"></pre>
-      </code>
+      <h5>
+        Kill
+        {{
+          confirmKillingDialog.process?.process_name &&
+          confirmKillingDialog.process?.process_name !== 'Unknown'
+            ? confirmKillingDialog.process?.process_name
+            : 'process'
+        }}
+        {{ confirmKillingDialog.process?.is_listener ? 'hosting' : 'using' }}
+        port {{ confirmKillingDialog.process?.port }}
+        ?
+      </h5>
+      <p>
+        Ending this process may disrupt services using port
+        {{ confirmKillingDialog.process?.port }}. Proceeding could result in
+        data loss, network issues, or system instability.
+      </p>
       <div class="confirm-killing-dialog__buttons">
         <BaseButton
+          :is-disabled="isLoading"
+          class="flex-grow"
           text="CANCEL"
           @left-clicked="cancelKilling"
-          class="flex-grow"
-          :is-disabled="isLoading"
         />
         <BaseButton
+          :is-loading="isLoading"
+          class="flex-grow"
           text="CONFIRM"
           @left-clicked="submitKilling"
-          class="flex-grow"
-          :is-loading="isLoading"
         />
       </div>
     </div>
   </Teleport>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import BaseButton from '@/components/base/BaseButton.vue';
 
 import { useDialogsStore } from '@/store/dialogs.store.ts';
@@ -32,7 +45,6 @@ import { storeToRefs } from 'pinia';
 
 import useKillProcess from '@/composables/useKillProcess';
 import { usePortProcessesStore } from '@/store/port-processes.store';
-import { EUsePortProcessesStoreActions } from '@/types/store/port-processes.types';
 
 import { v4 as uuidv4 } from 'uuid';
 import { useNotificationsStore } from '@/store/notifications.store';
@@ -63,9 +75,7 @@ async function submitKilling(): Promise<void> {
     const response = await kill(pid);
 
     if (response?.success) {
-      await portProcessesStore[
-        EUsePortProcessesStoreActions.FETCH_ACTIVE_PORT_PROCCESSES
-      ]();
+      await portProcessesStore.fetchActivePortProcesses();
 
       closeAndRevertToDefaults();
       notificationStore[EUseNotificationsStoreActions.ADD_TOAST_NOTICATION]({
@@ -82,6 +92,7 @@ async function submitKilling(): Promise<void> {
     console.error(error);
   }
 }
+
 async function cancelKilling(): Promise<void> {
   closeAndRevertToDefaults();
 }
@@ -89,17 +100,16 @@ async function cancelKilling(): Promise<void> {
 
 <style lang="scss" scoped>
 @use '@/styles/abstracts/_mixins.scss' as mixins;
+
 .dialog-overlay {
   height: 100%;
   width: 100%;
   position: absolute;
-  background-color: #2e2e2e;
-  opacity: 0.7;
-
-  z-index: 9;
-
   left: 0;
   top: 0;
+  z-index: 4;
+
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .confirm-killing-dialog {
@@ -108,15 +118,31 @@ async function cancelKilling(): Promise<void> {
   top: 50%;
   transform: translate(-50%, -50%);
 
-  z-index: 10;
+  width: 360px;
 
-  min-width: 400px;
-  min-height: 200px;
+  z-index: 6;
+  min-height: 120px;
 
-  background-color: #e3e3e3;
-  border-radius: 4px;
+  & > h5 {
+    color: var(--text-main-dialog);
+
+    font-size: 16px;
+    text-align: center;
+    margin: 4px 0;
+  }
+
+  & > p {
+    color: var(--text-active);
+    font-size: 12px;
+    margin-top: 0;
+    text-align: center;
+  }
+
+  background-color: var(--main-dialog-bg);
+  border-radius: 16px;
+  padding: 16px;
+
   border: 2px solid #1e1e1e;
-  padding: 4px;
 
   &__buttons {
     @include mixins.flex-display;
@@ -124,6 +150,7 @@ async function cancelKilling(): Promise<void> {
     height: 30px;
 
     gap: 4px;
+    background: transparent;
   }
 }
 </style>

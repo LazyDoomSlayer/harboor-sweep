@@ -15,7 +15,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import ToastNotificationItem from './ToastNotificationItem.vue';
 
 import { useNotificationsStore } from '@/store/notifications.store';
@@ -48,7 +48,7 @@ function handleRemovingToast(notification_id: string): void {
   top: 0;
   right: 0;
 
-  z-index: 1000;
+  z-index: 9;
 
   pointer-events: none;
 
