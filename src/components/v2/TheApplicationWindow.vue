@@ -23,9 +23,7 @@ const applicationStore = useApplicationStore();
       </button>
     </div>
 
-    <div class="spacer"></div>
-
-    <div>
+    <div class="titlebar__tab-wrapper">
       <button
         :class="{
           'is-active titlebar_tab-selected':
@@ -46,29 +44,29 @@ const applicationStore = useApplicationStore();
       </button>
     </div>
 
-    <div class="spacer"></div>
-
-    <button
-      id="titlebar-minimize"
-      class="titlebar__button titlebar__button-minimize"
-      @click.left="appWindow.minimize()"
-    >
-      <span class="material-symbols-rounded"> remove </span>
-    </button>
-    <button
-      id="titlebar-maximize"
-      class="titlebar__button titlebar__button-maximize"
-      @click.left="appWindow.toggleMaximize()"
-    >
-      <span class="material-symbols-rounded"> check_box_outline_blank </span>
-    </button>
-    <button
-      id="titlebar-close"
-      class="titlebar__button titlebar__button-close"
-      @click.left="appWindow.close()"
-    >
-      <span class="material-symbols-rounded"> close </span>
-    </button>
+    <div class="titlebar__actions">
+      <button
+        id="titlebar-minimize"
+        class="titlebar__button titlebar__button-minimize"
+        @click.left="appWindow.minimize()"
+      >
+        <span class="material-symbols-rounded"> remove </span>
+      </button>
+      <button
+        id="titlebar-maximize"
+        class="titlebar__button titlebar__button-maximize"
+        @click.left="appWindow.toggleMaximize()"
+      >
+        <span class="material-symbols-rounded"> check_box_outline_blank </span>
+      </button>
+      <button
+        id="titlebar-close"
+        class="titlebar__button titlebar__button-close"
+        @click.left="appWindow.close()"
+      >
+        <span class="material-symbols-rounded"> close </span>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -78,7 +76,7 @@ const applicationStore = useApplicationStore();
 .titlebar {
   @include mixins.flex-display;
   @include mixins.flex-direction-row;
-  @include mixins.justify-content-space-between;
+  justify-content: space-between;
   align-items: center;
 
   position: fixed;
@@ -87,9 +85,14 @@ const applicationStore = useApplicationStore();
   right: 0;
 
   height: 40px;
+  margin-bottom: 40px;
   padding: 0 8px;
 
   user-select: none;
+
+  & > div {
+    flex: 1;
+  }
 
   &__button {
     display: inline-flex;
@@ -186,5 +189,19 @@ const applicationStore = useApplicationStore();
     'GRAD' 0,
     'opsz' 16;
   font-size: 18px;
+}
+
+.titlebar__tab-wrapper {
+  @include mixins.flex-display;
+  @include mixins.flex-direction-row;
+  justify-content: center;
+  align-items: center;
+}
+
+.titlebar__actions {
+  @include mixins.flex-display;
+  @include mixins.flex-direction-row;
+  justify-content: flex-end;
+  align-items: center;
 }
 </style>

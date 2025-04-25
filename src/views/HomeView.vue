@@ -17,6 +17,7 @@ import type { TPortProcessItem, TPortProcessList } from '@/types';
 
 import { getCssVariable } from '@/utils/theme-helper';
 import TheApplicationWindow from '@/components/v2/TheApplicationWindow.vue';
+import TheApplicationProcessSearchComponent from '@/components/v2/TheApplicationProcessSearchComponent.vue';
 
 const portProcessesStore = usePortProcessesStore();
 
@@ -86,12 +87,13 @@ function resetFiltration(): void {
   <ToastNotificationManager />
 
   <TheApplicationWindow />
+  <TheApplicationProcessSearchComponent />
   <section
     style="
       display: flex;
       flex-direction: column;
       height: 100%;
-      margin-top: 60px;
+      margin-top: 10px;
     "
   >
     <div class="port-processes-filtration__wrapper">
