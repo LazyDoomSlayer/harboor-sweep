@@ -75,7 +75,7 @@
 }
 
 @mixin hide-text-overflow {
-  word-break: break-all;
+  word-break: normal;
   overflow: hidden;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;

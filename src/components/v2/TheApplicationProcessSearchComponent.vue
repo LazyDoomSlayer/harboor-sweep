@@ -11,7 +11,7 @@ const applicationStore = useApplicationStore();
         <span class="material-symbols-outlined search-icon"> search </span>
         <input
           class="search-input"
-          placeholder="Search ports and process names"
+          placeholder="Search PID, Port, Process name, Process path"
           type="text"
         />
       </div>
@@ -56,7 +56,7 @@ const applicationStore = useApplicationStore();
   display: flex;
   align-items: center;
   max-height: 36px;
-  width: 300px;
+  width: 400px;
 
   background-color: var(--main-input-bg);
   border-radius: 6px;
