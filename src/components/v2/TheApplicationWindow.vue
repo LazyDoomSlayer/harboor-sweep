@@ -9,7 +9,12 @@ const applicationStore = useApplicationStore();
 </script>
 
 <template>
-  <header id="titlebar-wrapper" class="titlebar" data-tauri-drag-region>
+  <header
+    id="titlebar-wrapper"
+    :class="{ 'application-unfocused': !applicationStore.isApplicationFocused }"
+    class="titlebar"
+    data-tauri-drag-region
+  >
     <div>
       <button
         id="titlebar-search"

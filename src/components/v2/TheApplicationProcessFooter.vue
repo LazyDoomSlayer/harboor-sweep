@@ -29,6 +29,7 @@ function killProcess(): void {
       applicationStore.processFooterComponentOpen ||
       portProcessesStore.processFocused
     "
+    :class="{ 'application-unfocused': !applicationStore.isApplicationFocused }"
     class="process-footer"
   >
     <button class="action-button" @click.left="killProcess">
