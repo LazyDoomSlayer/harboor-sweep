@@ -18,12 +18,14 @@ body,
   background-color: var(--main-bg);
 
   @include mixins.default-font;
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
+
 
 #app {
   display: flex;
@@ -37,6 +39,7 @@ html {
 
 :root {
   --main-bg: #1d1d20;
+  --main-dialog-bg: #36363a;
   --main-divider-bg: #3f3f41;
 
   --text-active: #e0e0e0;
@@ -62,6 +65,13 @@ html {
 
   --process-footer-bg: #2e2e32;
   --process-footer-bg-inactive: #222226;
+
+  --system-positive-color: #398a5c;
+  --system-positive-text: #33d17a;
+
+  --system-negative-bg: #563d3f;
+  --system-negative-text: #ff938b;
+  --system-negative-bg-hovered: #634244;
 }
 
 

@@ -2,8 +2,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 
 // Fonts
-import '@fontsource/jetbrains-mono/400.css';
-import '@fontsource/jetbrains-mono/800.css';
+import '@fontsource/funnel-sans';
 
 import 'material-icons/iconfont/outlined.css';
 import 'material-symbols/outlined.css';
