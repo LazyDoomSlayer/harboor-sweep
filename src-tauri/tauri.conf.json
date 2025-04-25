@@ -13,9 +13,11 @@
     "windows": [
       {
         "decorations": false,
-        "title": "Haboor Sweep",
-        "minWidth": 1024,
-        "minHeight": 768,
+        "title": "Harboor Sweep",
+        "minWidth": 480,
+        "minHeight": 480,
+        "width": 480,
+        "height": 480,
         "theme": "Dark"
       }
     ],
