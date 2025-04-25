@@ -146,9 +146,7 @@ async function cancelKilling(): Promise<void> {
 
   background-color: var(--main-dialog-bg);
   border-radius: 16px;
-  padding: 16px;
-
-  border: 2px solid #1e1e1e;
+  padding: 8px 12px;
 
   &__buttons {
     @include mixins.flex-display;
