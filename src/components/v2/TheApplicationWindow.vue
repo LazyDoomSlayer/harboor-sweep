@@ -22,7 +22,7 @@ const applicationStore = useApplicationStore();
         <span class="material-symbols-outlined"> search </span>
       </button>
     </div>
-
+    <div class="spacer"></div>
     <div class="titlebar__tab-wrapper">
       <button
         :class="{
@@ -43,6 +43,7 @@ const applicationStore = useApplicationStore();
         Port Processes
       </button>
     </div>
+    <div class="spacer"></div>
 
     <div class="titlebar__actions">
       <button
@@ -85,14 +86,9 @@ const applicationStore = useApplicationStore();
   right: 0;
 
   height: 40px;
-  margin-bottom: 40px;
   padding: 0 8px;
 
   user-select: none;
-
-  & > div {
-    flex: 1;
-  }
 
   &__button {
     display: inline-flex;
@@ -196,6 +192,8 @@ const applicationStore = useApplicationStore();
   @include mixins.flex-direction-row;
   justify-content: center;
   align-items: center;
+
+  margin-left: 44px;
 }
 
 .titlebar__actions {
