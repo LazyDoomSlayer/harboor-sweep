@@ -107,7 +107,7 @@ function focusOnProcess() {
 
   background: var(--process-list-item-bg);
   color: var(--text-process-list-item);
-  font-size: 14px;
+  font-size: 12px;
 
   & > div {
     padding: 0 6px;

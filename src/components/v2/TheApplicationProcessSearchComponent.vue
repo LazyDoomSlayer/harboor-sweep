@@ -5,18 +5,16 @@ const applicationStore = useApplicationStore();
 </script>
 
 <template>
-  <Transition name="dropdown">
-    <div v-if="applicationStore.searchComponentOpen" class="dropdown-content">
-      <div class="search-bar">
-        <span class="material-symbols-outlined search-icon"> search </span>
-        <input
-          class="search-input"
-          placeholder="Search PID, Port, Process name, Process path"
-          type="text"
-        />
-      </div>
+  <div v-if="applicationStore.searchComponentOpen" class="dropdown-content">
+    <div class="search-bar">
+      <span class="material-symbols-outlined search-icon"> search </span>
+      <input
+        class="search-input"
+        placeholder="Search PID, Port, Process name, Process path"
+        type="text"
+      />
     </div>
-  </Transition>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -30,26 +28,6 @@ const applicationStore = useApplicationStore();
   @include mixins.flex-direction-row;
   @include mixins.justify-content-center;
   align-items: center;
-}
-
-.dropdown-enter-from,
-.dropdown-leave-to {
-  opacity: 0;
-  transform: translateY(-32px);
-  max-height: 0;
-  overflow: hidden;
-}
-
-.dropdown-enter-active,
-.dropdown-leave-active {
-  @include mixins.transition-all('medium');
-}
-
-.dropdown-enter-to,
-.dropdown-leave-from {
-  opacity: 1;
-  transform: translateY(0);
-  max-height: 32px; // adjust based on your content
 }
 
 .search-bar {

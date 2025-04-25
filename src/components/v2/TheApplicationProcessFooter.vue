@@ -27,16 +27,15 @@ const portProcessesStore = usePortProcessesStore();
   justify-content: space-between;
   align-items: center;
 
-  position: fixed;
-
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: relative;
 
   height: 40px;
   padding: 0 8px;
 
   z-index: 100;
   user-select: none;
+
+  background-color: var(--process-footer-bg);
+  color: var(--text-active);
 }
 </style>
