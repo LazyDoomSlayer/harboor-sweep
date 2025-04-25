@@ -1,81 +1,93 @@
 import { defineStore } from 'pinia';
-
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 
-import { ESorting, type TPortProcessList } from '@/types';
 import {
-  type IUsePortProcessesStoreState,
-  EUsePortProcessesStoreActions,
-  EUsePortProcessesStoreGetters,
-} from '@/types/store/port-processes.types';
+  ESorting,
+  type TPortProcessItem,
+  type TPortProcessList,
+} from '@/types';
+import { type IUsePortProcessesStoreState } from '@/types/store/port-processes.types';
+import { computed, ref } from 'vue';
 
-export const usePortProcessesStore = defineStore('port-processes', {
-  state: (): IUsePortProcessesStoreState => ({
-    processes: [],
-    sorting: {
-      key: 'port',
-      direction: ESorting.ASCENDING,
-    },
-  }),
-  getters: {
-    [EUsePortProcessesStoreGetters.GET_SORTED_PROCESSES](
-      state: IUsePortProcessesStoreState,
-    ): IUsePortProcessesStoreState['processes'] {
-      const { key, direction } = state.sorting;
+export const usePortProcessesStore = defineStore('port-processes', () => {
+  const processes = ref<IUsePortProcessesStoreState['processes']>([]);
+  const sorting = ref<IUsePortProcessesStoreState['sorting']>({
+    key: 'port',
+    direction: ESorting.ASCENDING,
+  });
+  const processFocused = ref<TPortProcessItem | null>(null);
 
-      if (!key || direction === ESorting.NONE) {
-        return state.processes;
+  const getSortedProcesses = computed(() => {
+    const { key, direction } = sorting.value;
+
+    if (!key || direction === ESorting.NONE) {
+      return processes.value;
+    }
+
+    return [...processes.value].sort((a, b) => {
+      const valueA = a[key];
+      const valueB = b[key];
+
+      if (typeof valueA === 'string' && typeof valueB === 'string') {
+        return (
+          valueA.localeCompare(valueB) *
+          (direction === ESorting.ASCENDING ? 1 : -1)
+        );
       }
 
-      return [...state.processes].sort((a, b) => {
-        const valueA = a[key];
-        const valueB = b[key];
+      if (typeof valueA === 'number' && typeof valueB === 'number') {
+        return (valueA - valueB) * (direction === ESorting.ASCENDING ? 1 : -1);
+      }
 
-        if (typeof valueA === 'string' && typeof valueB === 'string') {
-          return (
-            valueA.localeCompare(valueB) *
-            (direction === ESorting.ASCENDING ? 1 : -1)
-          );
-        }
+      return 0;
+    });
+  });
 
-        if (typeof valueA === 'number' && typeof valueB === 'number') {
-          return (
-            (valueA - valueB) * (direction === ESorting.ASCENDING ? 1 : -1)
-          );
-        }
+  function deduplicateById(list: TPortProcessList): TPortProcessList {
+    const map = new Map<string, TPortProcessItem>();
 
-        return 0;
+    for (const item of list) {
+      map.set(item.id, item);
+    }
+
+    return Array.from(map.values());
+  }
+
+  const fetchActivePortProcesses = async () => {
+    try {
+      const result = await invoke('fetch_ports');
+      processes.value = deduplicateById(result as TPortProcessList);
+    } catch (error) {
+      console.error('Failed to fetch ports:', error);
+    }
+  };
+
+  const startPortProcessesObserver = async () => {
+    try {
+      await invoke('update_interval', { newInterval: 2 });
+      await invoke('start_monitoring');
+
+      listen('ports_update', (event) => {
+        processes.value = deduplicateById(event.payload as TPortProcessList);
       });
-    },
-  },
-  actions: {
-    async [EUsePortProcessesStoreActions.FETCH_ACTIVE_PORT_PROCCESSES](): Promise<void> {
-      try {
-        const result: TPortProcessList = await invoke('fetch_ports');
-
-        this.processes = result;
-      } catch (error) {
-        console.error('Failed to fetch ports:', error);
-      }
-    },
-    async [EUsePortProcessesStoreActions.START_PORT_PROCCESSES_OBSERVER](): Promise<void> {
-      try {
-        await invoke('update_interval', { newInterval: 2 });
-        await invoke('start_monitoring');
-
+    } catch (error) {
+      if (error === 'Monitoring is already running') {
         listen('ports_update', (event) => {
-          this.processes = event.payload as TPortProcessList;
+          processes.value = deduplicateById(event.payload as TPortProcessList);
         });
-      } catch (error) {
-        if (error === 'Monitoring is already running') {
-          listen('ports_update', (event) => {
-            this.processes = event.payload as TPortProcessList;
-          });
-          return;
-        }
-        console.error(error);
+        return;
       }
-    },
-  },
+      console.error(error);
+    }
+  };
+
+  return {
+    processes,
+    processFocused,
+    sorting,
+    getSortedProcesses,
+    fetchActivePortProcesses,
+    startPortProcessesObserver,
+  };
 });

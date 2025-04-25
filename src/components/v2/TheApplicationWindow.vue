@@ -9,7 +9,7 @@ const applicationStore = useApplicationStore();
 </script>
 
 <template>
-  <div id="titlebar-wrapper" class="titlebar" data-tauri-drag-region>
+  <header id="titlebar-wrapper" class="titlebar" data-tauri-drag-region>
     <div>
       <button
         id="titlebar-search"
@@ -68,7 +68,7 @@ const applicationStore = useApplicationStore();
         <span class="material-symbols-rounded"> close </span>
       </button>
     </div>
-  </div>
+  </header>
 </template>
 
 <style lang="scss" scoped>

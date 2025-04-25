@@ -3,8 +3,7 @@
     :id="elementId"
     :style="computedStyleObject"
     class="process-item"
-    @mouseenter="updateHoverStatus(true)"
-    @mouseleave="updateHoverStatus(false)"
+    @click.left="focusOnProcess"
   >
     <div class="process-item__pid hide-text-overflow-line-1">
       {{ props.process.pid }}
@@ -19,7 +18,7 @@
       {{ props.process.process_path }}
     </div>
     <div class="process-item__state hide-text-overflow-line-1">
-      {{ props.process.is_listener ? 'Hover' : 'Estabilished' }}
+      {{ props.process.is_listener ? 'Hosting' : 'Using' }}
     </div>
     <!--    <div class="process-item__actions">-->
     <!--&lt;!&ndash;      <BaseButton&ndash;&gt;-->
@@ -34,13 +33,16 @@
 
 <script lang="ts" setup>
 import type { TPortProcessItem } from '@/types';
-import { computed, type CSSProperties, ref, shallowRef } from 'vue';
+import { computed, type CSSProperties, shallowRef } from 'vue';
 import { getCssVariable } from '@/utils/theme-helper';
+import { usePortProcessesStore } from '@/store/port-processes.store.ts';
 
 const props = defineProps<{
   process: TPortProcessItem;
   maxItemHeight: number;
 }>();
+
+const portProcessesStore = usePortProcessesStore();
 
 const elementId = shallowRef<string>(`process-item_${props.process.id}`);
 
@@ -49,14 +51,21 @@ const hoveredBackgroundColor = getCssVariable('process-list-item-bg-focused');
 const computedStyleObject = computed<CSSProperties>(() => {
   return {
     height: `${props.maxItemHeight}px`,
-    backgroundColor: isHoveredOn.value ? hoveredBackgroundColor : 'transparent',
+    backgroundColor:
+      portProcessesStore.processFocused?.id === props.process?.id
+        ? hoveredBackgroundColor
+        : 'transparent',
   };
 });
 
-const isHoveredOn = ref<boolean>(false);
+// const isHoveredOn = ref<boolean>(false);
 
-function updateHoverStatus(hovered: boolean): void {
-  isHoveredOn.value = hovered === true;
+// function updateHoverStatus(hovered: boolean): void {
+//   isHoveredOn.value = hovered === true;
+// }
+
+function focusOnProcess() {
+  portProcessesStore.processFocused = props.process;
 }
 
 // function killProcess(): void {
