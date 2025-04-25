@@ -22,16 +22,22 @@
       <div class="confirm-killing-dialog__buttons">
         <BaseButton
           :is-disabled="isLoading"
-          class="flex-grow"
-          text="CANCEL"
+          style="background: var(--cancel-button-bg); width: 50%"
           @left-clicked="cancelKilling"
-        />
+        >
+          <template #content>
+            <span style="color: var(--text-active)"> CANCEL </span>
+          </template>
+        </BaseButton>
         <BaseButton
           :is-loading="isLoading"
-          class="flex-grow"
-          text="CONFIRM"
+          style="background: var(--system-negative-bg); width: 50%"
           @left-clicked="submitKilling"
-        />
+        >
+          <template #content>
+            <span style="color: var(--system-negative-text)"> Kill </span>
+          </template>
+        </BaseButton>
       </div>
     </div>
   </Teleport>

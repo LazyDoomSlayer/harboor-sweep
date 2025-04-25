@@ -17,7 +17,7 @@
       :stroke-width="4"
     />
 
-    <slot v-else name="content"> {{ text }}</slot>
+    <slot v-else name="content"></slot>
 
     <slot name="append">
       <span v-if="componentProps.appendIcon">
@@ -37,7 +37,6 @@ interface IProps {
   isLoading?: boolean;
   prependIcon?: string;
   appendIcon?: string;
-  text: string;
 
   backgroundColor?: string;
   textColor?: string;
