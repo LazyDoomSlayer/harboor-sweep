@@ -64,9 +64,24 @@
   -webkit-justify-content: center;
 }
 
+@mixin justify-content-flexEnd {
+  justify-content: flex-end;
+  -webkit-justify-content: flex-end;
+}
+
+@mixin justify-content-flexStart {
+  justify-content: flex-start;
+  -webkit-justify-content: flex-start;
+}
+
 @mixin justify-content-space-between {
   justify-content: space-between;
   -webkit-justify-content: space-between;
+}
+
+@mixin align-content-center {
+  align-content: center;
+  -webkit-align-content: center;
 }
 
 @mixin disable-user-selection {
