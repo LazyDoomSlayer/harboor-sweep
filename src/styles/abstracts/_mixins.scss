@@ -84,6 +84,11 @@
   -webkit-align-content: center;
 }
 
+@mixin align-items-center {
+  align-items: center;
+  -webkit-align-items: center;
+}
+
 @mixin disable-user-selection {
   user-select: none;
   pointer-events: none;
