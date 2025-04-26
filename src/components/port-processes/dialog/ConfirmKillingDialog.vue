@@ -55,6 +55,7 @@ import { usePortProcessesStore } from '@/store/port-processes.store.ts';
 import { v4 as uuidv4 } from 'uuid';
 import { useNotificationsStore } from '@/store/notifications.store.ts';
 import { EUseNotificationsStoreActions } from '@/types/store/notifications.types.ts';
+import { useApplicationStore } from '@/store/application.store.ts';
 
 const dialogStore = useDialogsStore();
 const { confirmKillingDialog } = storeToRefs(dialogStore);
@@ -67,6 +68,7 @@ function closeAndRevertToDefaults(): void {
 
 const { isLoading, kill } = useKillProcess();
 
+const applicationStore = useApplicationStore();
 const portProcessesStore = usePortProcessesStore();
 const notificationStore = useNotificationsStore();
 
@@ -88,6 +90,8 @@ async function submitKilling(): Promise<void> {
         id: uuidv4(),
         title: `Success: Process with pid: ${pid} , has been killed successfully.`,
       });
+      applicationStore.processFooterComponentOpen = false;
+      portProcessesStore.processFocused = null;
     } else {
       notificationStore[EUseNotificationsStoreActions.ADD_TOAST_NOTICATION]({
         id: uuidv4(),

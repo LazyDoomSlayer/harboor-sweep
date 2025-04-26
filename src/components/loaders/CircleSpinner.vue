@@ -1,24 +1,24 @@
 <template>
   <svg
-    class="spinner"
-    :width="size"
     :height="size"
     :viewBox="`0 0 ${size} ${size}`"
+    :width="size"
+    class="spinner"
     xmlns="http://www.w3.org/2000/svg"
   >
     <circle
-      class="path"
-      fill="none"
-      :stroke-width="strokeWidth"
-      stroke-linecap="round"
       :cx="size / 2"
       :cy="size / 2"
       :r="(size - strokeWidth) / 2"
+      :stroke-width="strokeWidth"
+      class="path"
+      fill="none"
+      stroke-linecap="round"
     ></circle>
   </svg>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 withDefaults(
   defineProps<{
     size?: number;
@@ -31,7 +31,7 @@ withDefaults(
 );
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .spinner {
   animation: rotate 1s linear infinite;
 }
@@ -43,7 +43,7 @@ withDefaults(
 }
 
 .path {
-  stroke: #3498db;
+  stroke: var(--main-element-focused);
   stroke-dasharray: 150, 200;
   stroke-dashoffset: -10;
   animation:
@@ -68,19 +68,16 @@ withDefaults(
 
 @keyframes color {
   0% {
-    stroke: #3498db;
+    stroke: var(--main-element-focused);
   }
   25% {
-    stroke: #e74c3c;
+    stroke: var(--main-input-icon);
   }
   50% {
-    stroke: #f1c40f;
-  }
-  75% {
-    stroke: #2ecc71;
+    stroke: var(--text-main-input-label);
   }
   100% {
-    stroke: #3498db;
+    stroke: var(--main-element-focused);
   }
 }
 </style>

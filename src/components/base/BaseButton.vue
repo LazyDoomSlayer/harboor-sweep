@@ -77,15 +77,19 @@ function rightClicked(event: MouseEvent) {
 
 button {
   @include mixins.flex-display;
-  justify-content: center;
+  @include mixins.justify-content-center;
+  @include mixins.align-items-center;
 
-  align-items: center;
   border-radius: 6px;
+  outline: 1px solid transparent;
 
-  outline: none;
+  &:focus-within {
+    outline: 2px solid var(--main-element-focused);
+  }
+
   border: none;
 
   background-color: transparent;
-  color: white;
+  color: var(--text-active);
 }
 </style>

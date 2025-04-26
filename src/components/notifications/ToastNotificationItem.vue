@@ -53,7 +53,7 @@ const emit = defineEmits<{
 
 const styleObject: CSSProperties = {
   color: props.data.textColor || '#ffffff',
-  backgroundColor: props.data.backgroundColor || '#323232',
+  backgroundColor: props.data.backgroundColor || '#36363a',
 };
 
 const isHovered = ref<boolean>(false);
@@ -90,15 +90,16 @@ function removeNotification(): void {
   @include mixins.align-content-center;
   @include mixins.transition-all('medium');
 
-  padding: 10px 15px;
+  padding: 6px 12px;
   border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border: 2px solid var(--main-divider-bg);
+  font-size: 12px;
 
-  width: 250px;
+  min-width: 220px;
+  max-width: 260px;
 
   overflow: hidden;
-  font-weight: 600;
 
   &:hover {
     transform: scale(1.05);
@@ -115,7 +116,7 @@ function removeNotification(): void {
 
   &__description {
     font-size: 12px;
-    color: #e0e0e0;
+    color: var(--text-active);
   }
 
   &__icon {
@@ -137,7 +138,7 @@ function removeNotification(): void {
   &__close {
     cursor: pointer;
     margin-left: 10px;
-    color: white;
+    color: var(--text-active);
 
     font-size: 16px;
   }
