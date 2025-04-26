@@ -10,9 +10,9 @@ const inputRef = useTemplateRef<HTMLInputElement>('inputRef');
 watch(
   () => applicationStore.searchComponentOpen,
   async (isOpen) => {
-    if (isOpen && inputRef.value) {
+    if (isOpen) {
       await nextTick();
-      inputRef.value.focus();
+      inputRef.value?.focus();
     }
   },
 );
@@ -74,7 +74,7 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/abstracts/_mixins.scss' as mixins;
+@use '@/styles/abstracts/mixins' as mixins;
 
 .search-dropdown {
   width: 100%;

@@ -3,9 +3,9 @@
     :style="{ height: `${computedVirtualListHeight}px` }"
     class="port-process-table"
   >
-    <V2PortProcessListHeader />
+    <PortProcessListHeader />
 
-    <VirtualList
+    <BaseVirtualList
       v-if="computedVirtualListHeight > 0"
       ref="virtualListRef"
       :available-height="computedVirtualListHeight"
@@ -15,22 +15,22 @@
       class="port-process-table__list"
     >
       <template #item="{ item }">
-        <V2PortProcessesItem
+        <PortProcessesItem
           :max-item-height="ITEM_HEIGHT"
           :process="item as TPortProcessItem"
         />
       </template>
-    </VirtualList>
+    </BaseVirtualList>
   </div>
 </template>
 
 <script lang="ts" setup>
-import VirtualList from '@/components/virtual/VirtualList.vue';
-import V2PortProcessesItem from '@/components/v2/V2PortProcessesItem.vue';
-import V2PortProcessListHeader from '@/components/v2/V2PortProcessListHeader.vue';
+import BaseVirtualList from '@/components/base/BaseVirtualList.vue';
+import PortProcessesItem from '@/components/port-processes/PortProcessesItem.vue';
+import PortProcessListHeader from '@/components/port-processes/PortProcessListHeader.vue';
 
 import type { TPortProcessItem, TPortProcessList } from '@/types';
-import { EScrollBehavior } from '@/types/virtual-list.types';
+import { EScrollBehavior } from '@/types/virtual-list.types.ts';
 import { computed, onMounted, ref } from 'vue';
 import { useApplicationStore } from '@/store/application.store.ts';
 import { usePortProcessesStore } from '@/store/port-processes.store.ts';
@@ -77,7 +77,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@use '@/styles/abstracts/_mixins.scss' as mixins;
+@use '@/styles/abstracts/mixins' as mixins;
 
 .port-process-table {
   @include mixins.flex-display;

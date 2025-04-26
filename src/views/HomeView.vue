@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import ConfirmKillingDialog from '@/components/dialog/ConfirmKillingDialog.vue';
+import ConfirmKillingDialog from '@/components/port-processes/dialog/ConfirmKillingDialog.vue';
 import ToastNotificationManager from '@/components/notifications/ToastNotificationManager.vue';
-import TheApplicationWindow from '@/components/v2/TheApplicationWindow.vue';
-import TheApplicationProcessSearchComponent from '@/components/v2/TheApplicationProcessSearchComponent.vue';
-import TheApplicationProcessFooter from '@/components/v2/TheApplicationProcessFooter.vue';
-import V2PortProccessesList from '@/components/v2/V2PortProccessesList.vue';
+import TheApplicationWindow from '@/components/layout/TheApplicationWindow.vue';
+import TheApplicationProcessSearchComponent from '@/components/port-processes/layout/TheApplicationProcessSearchComponent.vue';
+import TheApplicationProcessFooter from '@/components/port-processes/layout/TheApplicationProcessFooter.vue';
+import PortProcessesList from '@/components/port-processes/PortProcessesList.vue';
 
 import { computed, onMounted, ref, useTemplateRef } from 'vue';
 
@@ -50,7 +50,7 @@ const { height: mainElementHeight } = useElementSize(mainElementRef);
 
     <main ref="mainElementRef" class="port-processes__content">
       <TheApplicationProcessSearchComponent v-model="searchModel" />
-      <V2PortProccessesList
+      <PortProcessesList
         v-if="mainElementHeight > 0"
         :available-height="mainElementHeight"
         :list="computedProcesses"

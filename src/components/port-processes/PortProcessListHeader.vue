@@ -45,7 +45,7 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
-import { usePortProcessesStore } from '@/store/port-processes.store';
+import { usePortProcessesStore } from '@/store/port-processes.store.ts';
 
 import { ESorting, type TPortProcessItem } from '@/types';
 
@@ -64,8 +64,8 @@ function changeSorting(key: keyof TPortProcessItem): void {
 </script>
 
 <style lang="scss" scoped>
-@use '@/styles/abstracts/_mixins.scss' as mixins;
-@use '@/styles/abstracts/_variables.scss' as variables;
+@use '@/styles/abstracts/mixins' as mixins;
+@use '@/styles/abstracts/variables' as variables;
 
 .process-table-header {
   @include mixins.flex-display;

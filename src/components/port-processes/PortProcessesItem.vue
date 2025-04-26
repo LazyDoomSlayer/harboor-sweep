@@ -26,7 +26,7 @@
 <script lang="ts" setup>
 import type { TPortProcessItem } from '@/types';
 import { computed, type CSSProperties, shallowRef } from 'vue';
-import { getCssVariable } from '@/utils/theme-helper';
+import { getCssVariable } from '@/utils/theme-helper.ts';
 import { usePortProcessesStore } from '@/store/port-processes.store.ts';
 
 const props = defineProps<{
@@ -87,8 +87,8 @@ function focusOnProcess() {
 </script>
 
 <style lang="scss" scoped>
-@use '@/styles/abstracts/_mixins.scss' as mixins;
-@use '@/styles/abstracts/_variables.scss' as variables;
+@use '@/styles/abstracts/mixins' as mixins;
+@use '@/styles/abstracts/variables' as variables;
 
 .process-item {
   @include mixins.flex-display;

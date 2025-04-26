@@ -49,12 +49,12 @@ import BaseButton from '@/components/base/BaseButton.vue';
 import { useDialogsStore } from '@/store/dialogs.store.ts';
 import { storeToRefs } from 'pinia';
 
-import useKillProcess from '@/composables/useKillProcess';
-import { usePortProcessesStore } from '@/store/port-processes.store';
+import useKillProcess from '@/composables/useKillProcess.ts';
+import { usePortProcessesStore } from '@/store/port-processes.store.ts';
 
 import { v4 as uuidv4 } from 'uuid';
-import { useNotificationsStore } from '@/store/notifications.store';
-import { EUseNotificationsStoreActions } from '@/types/store/notifications.types';
+import { useNotificationsStore } from '@/store/notifications.store.ts';
+import { EUseNotificationsStoreActions } from '@/types/store/notifications.types.ts';
 
 const dialogStore = useDialogsStore();
 const { confirmKillingDialog } = storeToRefs(dialogStore);
@@ -105,7 +105,7 @@ async function cancelKilling(): Promise<void> {
 </script>
 
 <style lang="scss" scoped>
-@use '@/styles/abstracts/_mixins.scss' as mixins;
+@use '@/styles/abstracts/mixins' as mixins;
 
 .confirm-killing-dialog {
   z-index: 6;

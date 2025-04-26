@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import { EScrollBehavior, type IProps } from '@/types/virtual-list.types';
+import { EScrollBehavior, type IProps } from '@/types/virtual-list.types.ts';
 import { UseVirtualList } from '@vueuse/components';
 
 const componentProps = withDefaults(defineProps<IProps>(), {

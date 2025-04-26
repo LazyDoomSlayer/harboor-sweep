@@ -41,7 +41,7 @@ function killProcess(): void {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/abstracts/_mixins.scss' as mixins;
+@use '@/styles/abstracts/mixins' as mixins;
 
 .process-footer {
   @include mixins.flex-display;

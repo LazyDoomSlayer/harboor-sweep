@@ -85,7 +85,7 @@ const applicationStore = useApplicationStore();
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/abstracts/_mixins.scss' as mixins;
+@use '@/styles/abstracts/mixins' as mixins;
 
 .titlebar {
   @include mixins.flex-display;
