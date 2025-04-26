@@ -22,20 +22,24 @@
       <div class="confirm-killing-dialog__buttons">
         <BaseButton
           :is-disabled="isLoading"
-          style="background: var(--cancel-button-bg); width: 50%"
+          class="confirm-killing-dialog__buttons__cancel"
           @left-clicked="cancelKilling"
         >
           <template #content>
-            <span style="color: var(--text-active)"> CANCEL </span>
+            <span class="confirm-killing-dialog__buttons__cancel-text">
+              CANCEL
+            </span>
           </template>
         </BaseButton>
         <BaseButton
           :is-loading="isLoading"
-          style="background: var(--system-negative-bg); width: 50%"
+          class="confirm-killing-dialog__buttons__submit"
           @left-clicked="submitKilling"
         >
           <template #content>
-            <span style="color: var(--system-negative-text)"> Kill </span>
+            <span class="confirm-killing-dialog__buttons__submit-text">
+              Kill
+            </span>
           </template>
         </BaseButton>
       </div>
@@ -161,6 +165,36 @@ async function cancelKilling(): Promise<void> {
     gap: 4px;
 
     background: transparent;
+
+    & > * {
+      @include mixins.transition-all('medium');
+    }
+
+    &__cancel {
+      background: var(--cancel-button-bg);
+      width: 50%;
+
+      &:hover {
+        background-color: var(--cancel-button-bg-hovered);
+      }
+
+      &-text {
+        color: var(--text-active);
+      }
+    }
+
+    &__submit {
+      background: var(--system-negative-bg);
+      width: 50%;
+
+      &:hover {
+        background-color: var(--system-negative-bg-hovered);
+      }
+
+      &-text {
+        color: var(--system-negative-text);
+      }
+    }
   }
 }
 </style>

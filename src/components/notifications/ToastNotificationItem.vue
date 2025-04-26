@@ -90,7 +90,7 @@ function removeNotification(): void {
   @include mixins.align-content-center;
   @include mixins.transition-all('medium');
 
-  padding: 6px 12px;
+  padding: 6px;
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   border: 2px solid var(--main-divider-bg);
