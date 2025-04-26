@@ -29,10 +29,12 @@ function killProcess(): void {
       applicationStore.processFooterComponentOpen ||
       portProcessesStore.processFocused
     "
-    :class="{ 'application-unfocused': !applicationStore.isApplicationFocused }"
-    class="process-footer"
+    :class="[
+      'process-footer',
+      { 'process-footer--unfocused': !applicationStore.isApplicationFocused },
+    ]"
   >
-    <button class="action-button" @click.left="killProcess">
+    <button class="process-footer__button" @click.left="killProcess">
       Kill Process
     </button>
   </footer>
@@ -44,62 +46,60 @@ function killProcess(): void {
 .process-footer {
   @include mixins.flex-display;
   @include mixins.flex-direction-row;
-  justify-content: space-between;
+  @include mixins.justify-content-space-between;
   align-items: center;
 
   position: relative;
+  z-index: 4;
+  user-select: none;
 
   height: 40px;
   padding: 0 8px;
 
-  z-index: 4;
-  user-select: none;
-
-  border-top: 1px solid var(--main-divider-bg);
   background-color: var(--main-bg);
   color: var(--text-active);
-}
+  border-top: 1px solid var(--main-divider-bg);
 
-.action-button {
-  @include mixins.flex-display;
-  @include mixins.flex-direction-row;
-  align-items: center;
-
-  background-color: var(--system-negative-bg);
-
-  height: 20px;
-
-  border: none;
-  border-radius: 6px;
-
-  color: var(--system-negative-text);
-  font-size: 12px;
-  padding: 2px 4px;
-
-  outline: 2px solid transparent;
-
-  @include mixins.transition-all('medium');
-  cursor: pointer;
-
-  &-selected {
-    cursor: default;
+  &--unfocused {
+    opacity: 0.5;
   }
 
-  & > .material-symbols-rounded__filled {
-    margin-right: 4px;
-  }
+  &__button {
+    @include mixins.flex-display;
+    @include mixins.flex-direction-row;
+    align-items: center;
 
-  &:hover {
-    background-color: var(--system-negative-bg-hovered);
-  }
+    background-color: var(--system-negative-bg);
+    color: var(--system-negative-text);
 
-  &:focus-visible {
-    outline-color: var(--system-negative-text);
-    outline-offset: 2px;
-  }
+    height: 20px;
+    padding: 4px 8px;
+    font-size: 10px;
+    font-weight: bold;
 
-  &.is-active {
-    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 6px;
+    outline: 2px solid transparent;
+
+    cursor: pointer;
+    @include mixins.transition-all('medium');
+
+    &:hover {
+      background-color: var(--system-negative-bg-hovered);
+    }
+
+    &:focus-visible {
+      outline-color: var(--system-negative-text);
+      outline-offset: 2px;
+    }
+
+    &.is-active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    & > .material-symbols-rounded__filled {
+      margin-right: 4px;
+    }
   }
 }
 

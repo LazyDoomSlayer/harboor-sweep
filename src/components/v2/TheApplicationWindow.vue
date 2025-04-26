@@ -11,66 +11,74 @@ const applicationStore = useApplicationStore();
 <template>
   <header
     id="titlebar-wrapper"
-    :class="{ 'application-unfocused': !applicationStore.isApplicationFocused }"
-    class="titlebar"
+    :class="[
+      'titlebar',
+      { 'titlebar--unfocused': !applicationStore.isApplicationFocused },
+    ]"
     data-tauri-drag-region
   >
     <div>
       <button
         id="titlebar-search"
-        class="titlebar__button titlebar__button-search"
+        class="titlebar__button titlebar__button--search"
         @click.left="
           applicationStore.searchComponentOpen =
             !applicationStore.searchComponentOpen
         "
       >
-        <span class="material-symbols-outlined"> search </span>
+        <span class="material-symbols-outlined">search</span>
       </button>
     </div>
+
     <div class="spacer"></div>
+
     <div class="titlebar__tab-wrapper">
       <button
-        :class="{
-          'is-active titlebar_tab-selected':
-            applicationStore.currentApplicationWindow ===
-            EApplicationCurrentView.PORT_PROCESSES,
-        }"
-        class="titlebar_tab"
+        :class="[
+          'titlebar__tab',
+          {
+            'titlebar__tab--selected':
+              applicationStore.currentApplicationWindow ===
+              EApplicationCurrentView.PORT_PROCESSES,
+          },
+        ]"
         @click="
-          applicationStore.currentApplicationWindow ===
-          EApplicationCurrentView.PORT_PROCESSES
+          applicationStore.currentApplicationWindow =
+            EApplicationCurrentView.PORT_PROCESSES
         "
       >
         <span class="material-symbols-rounded material-symbols-rounded__filled">
           play_arrow
         </span>
-
         Port Processes
       </button>
     </div>
+
     <div class="spacer"></div>
 
     <div class="titlebar__actions">
       <button
         id="titlebar-minimize"
-        class="titlebar__button titlebar__button-minimize"
+        class="titlebar__button titlebar__button--minimize"
         @click.left="appWindow.minimize()"
       >
-        <span class="material-symbols-rounded"> remove </span>
+        <span class="material-symbols-rounded">remove</span>
       </button>
+
       <button
         id="titlebar-maximize"
-        class="titlebar__button titlebar__button-maximize"
+        class="titlebar__button titlebar__button--maximize"
         @click.left="appWindow.toggleMaximize()"
       >
-        <span class="material-symbols-rounded"> check_box_outline_blank </span>
+        <span class="material-symbols-rounded">check_box_outline_blank</span>
       </button>
+
       <button
         id="titlebar-close"
-        class="titlebar__button titlebar__button-close"
+        class="titlebar__button titlebar__button--close"
         @click.left="appWindow.close()"
       >
-        <span class="material-symbols-rounded"> close </span>
+        <span class="material-symbols-rounded">close</span>
       </button>
     </div>
   </header>
@@ -82,7 +90,7 @@ const applicationStore = useApplicationStore();
 .titlebar {
   @include mixins.flex-display;
   @include mixins.flex-direction-row;
-  justify-content: space-between;
+  @include mixins.justify-content-space-between;
   align-items: center;
 
   position: fixed;
@@ -92,41 +100,42 @@ const applicationStore = useApplicationStore();
 
   height: 40px;
   padding: 0 8px;
-
   user-select: none;
+
+  &--unfocused {
+    opacity: 0.5;
+  }
 
   &__button {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
 
-    padding: 2px;
-    z-index: 10;
-
-    height: 22px;
     width: 22px;
+    height: 22px;
+    padding: 2px;
 
-    user-select: none;
-    -webkit-user-select: none;
-
-    border-radius: 6px;
     border: none;
+    border-radius: 6px;
     outline: 1px solid transparent;
 
-    color: white;
     background-color: transparent;
+    color: white;
+
+    cursor: pointer;
+    user-select: none;
+    z-index: 10;
 
     @include mixins.transition-all('medium');
 
-    &-search > span,
-    &-minimize > span,
-    &-close > span {
-      font-size: 18px !important;
+    &--search span,
+    &--minimize span,
+    &--close span {
+      font-size: 18px;
     }
 
-    &-maximize > span {
-      font-size: 16px !important;
+    &--maximize span {
+      font-size: 16px;
     }
 
     &:hover {
@@ -137,48 +146,58 @@ const applicationStore = useApplicationStore();
       outline-color: var(--main-element-focused);
     }
   }
-}
 
-.titlebar_tab {
-  @include mixins.flex-display;
-  @include mixins.flex-direction-row;
-  align-items: center;
+  &__tab {
+    @include mixins.flex-display;
+    @include mixins.flex-direction-row;
+    align-items: center;
 
-  background: transparent;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 6px;
 
-  padding: 4px 6px;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
 
-  border: none;
-  border-radius: 6px;
+    outline: 1px solid transparent;
+    @include mixins.transition-all('medium');
 
-  color: white;
-  font-size: 12px;
-  font-weight: 500;
+    & > .material-symbols-rounded__filled {
+      margin-right: 4px;
+    }
 
-  outline: 1px solid transparent;
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
 
-  @include mixins.transition-all('medium');
-  cursor: pointer;
+    &:focus-visible {
+      outline-color: var(--main-element-focused);
+      outline-offset: 2px;
+    }
 
-  &-selected {
-    cursor: default;
+    &--selected {
+      cursor: default;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
   }
 
-  & > .material-symbols-rounded__filled {
-    margin-right: 4px;
+  &__tab-wrapper {
+    @include mixins.flex-display;
+    @include mixins.flex-direction-row;
+    @include mixins.justify-content-center;
+    align-items: center;
+
+    margin-left: 44px;
   }
 
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-  }
-
-  &:focus-visible {
-    outline-color: var(--main-element-focused);
-    outline-offset: 2px;
-  }
-
-  &.is-active {
-    background-color: rgba(255, 255, 255, 0.1);
+  &__actions {
+    @include mixins.flex-display;
+    @include mixins.flex-direction-row;
+    @include mixins.justify-content-flexEnd;
+    align-items: center;
   }
 }
 
@@ -189,21 +208,5 @@ const applicationStore = useApplicationStore();
     'GRAD' 0,
     'opsz' 16;
   font-size: 16px;
-}
-
-.titlebar__tab-wrapper {
-  @include mixins.flex-display;
-  @include mixins.flex-direction-row;
-  justify-content: center;
-  align-items: center;
-
-  margin-left: 44px;
-}
-
-.titlebar__actions {
-  @include mixins.flex-display;
-  @include mixins.flex-direction-row;
-  justify-content: flex-end;
-  align-items: center;
 }
 </style>

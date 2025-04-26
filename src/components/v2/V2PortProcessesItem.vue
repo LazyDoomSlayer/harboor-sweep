@@ -20,14 +20,6 @@
     <div class="process-item__state hide-text-overflow-line-1">
       {{ props.process.is_listener ? 'Hosting' : 'Using' }}
     </div>
-    <!--    <div class="process-item__actions">-->
-    <!--&lt;!&ndash;      <BaseButton&ndash;&gt;-->
-    <!--&lt;!&ndash;        :background-color="buttonBackgroundColor"&ndash;&gt;-->
-    <!--&lt;!&ndash;        text="Kill"&ndash;&gt;-->
-    <!--&lt;!&ndash;        @left-clicked="killProcess"&ndash;&gt;-->
-    <!--&lt;!&ndash;      />&ndash;&gt;-->
-    <!--      &lt;!&ndash;      <BaseButton text="Details" @left-clicked="checkPort" />&ndash;&gt;-->
-    <!--    </div>-->
   </div>
 </template>
 
@@ -109,7 +101,11 @@ function focusOnProcess() {
   color: var(--text-process-list-item);
   font-size: 12px;
 
-  & > div {
+  &__pid,
+  &__port,
+  &__process-name,
+  &__process-path,
+  &__state {
     padding: 0 6px;
     line-height: 20px;
     max-height: 20px;

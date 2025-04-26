@@ -10,9 +10,9 @@ const inputRef = useTemplateRef<HTMLInputElement>('inputRef');
 watch(
   () => applicationStore.searchComponentOpen,
   async (isOpen) => {
-    if (isOpen) {
+    if (isOpen && inputRef.value) {
       await nextTick();
-      inputRef.value?.focus();
+      inputRef.value.focus();
     }
   },
 );
@@ -46,23 +46,25 @@ onUnmounted(() => {
 <template>
   <div
     v-if="applicationStore.searchComponentOpen"
-    class="dropdown-content"
+    class="search-dropdown"
     @keydown.esc="applicationStore.searchComponentOpen = false"
   >
-    <div class="search-bar">
-      <span class="material-symbols-outlined search-icon"> search </span>
+    <div class="search-dropdown__bar">
+      <span class="material-symbols-outlined search-dropdown__icon"
+        >search</span
+      >
 
       <input
         ref="inputRef"
         v-model="searchModel"
-        class="search-input"
+        class="search-dropdown__input"
         placeholder="Search PID, Port, Process name, Process path"
         type="text"
       />
 
       <span
         v-if="searchModel"
-        class="material-symbols-rounded clear-icon"
+        class="material-symbols-rounded search-dropdown__clear"
         @click="searchModel = ''"
       >
         backspace
@@ -74,49 +76,50 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 @use '@/styles/abstracts/_mixins.scss' as mixins;
 
-.dropdown-content {
-  height: 32px;
+.search-dropdown {
   width: 100%;
+  height: 32px;
 
   @include mixins.flex-display;
   @include mixins.flex-direction-row;
   @include mixins.justify-content-center;
   align-items: center;
-}
 
-.search-bar {
-  display: flex;
-  align-items: center;
-  max-height: 36px;
-  width: 410px;
+  &__bar {
+    @include mixins.flex-display;
+    @include mixins.flex-direction-row;
+    align-items: center;
+    width: 410px;
+    max-height: 36px;
 
-  background-color: var(--main-input-bg);
-  border-radius: 6px;
-  outline: 1px solid transparent;
+    background-color: var(--main-input-bg);
+    border-radius: 6px;
+    outline: 1px solid transparent;
+    padding: 2px;
 
-  padding: 2px;
-  color: var(--text-main-input-label);
-  @include mixins.transition-all('medium');
+    color: var(--text-main-input-label);
+    @include mixins.transition-all('medium');
 
-  &:focus-within {
-    outline: 2px solid var(--main-element-focused);
+    &:focus-within {
+      outline: 2px solid var(--main-element-focused);
+    }
   }
 
-  .search-icon {
+  &__icon {
     font-size: 18px;
     color: var(--main-input-icon);
     margin: 0 4px;
-    @include mixins.transition-all('medium');
     cursor: pointer;
+    @include mixins.transition-all('medium');
 
     &:hover {
       color: var(--text-main-input);
     }
   }
 
-  .clear-icon {
-    padding-right: 4px;
+  &__clear {
     font-size: 18px;
+    padding-right: 4px;
     cursor: pointer;
     @include mixins.transition-all('medium');
 
@@ -125,17 +128,13 @@ onUnmounted(() => {
     }
   }
 
-  .search-input {
+  &__input {
+    flex: 1;
     border: none;
     background: transparent;
     font-size: 14px;
     color: var(--text-main-input);
-    width: 100%;
     outline: none;
-
-    &:focus-visible .search-bar {
-      outline-color: var(--main-element-focused);
-    }
 
     &::placeholder {
       font-size: 12px;

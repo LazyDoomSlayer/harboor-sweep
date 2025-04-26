@@ -1,8 +1,8 @@
 <template>
   <Teleport v-if="confirmKillingDialog.opened" to="body">
-    <div class="dialog-overlay"></div>
+    <div class="confirm-killing-dialog__overlay"></div>
     <div class="confirm-killing-dialog">
-      <h5>
+      <h5 class="confirm-killing-dialog__title">
         Kill
         {{
           confirmKillingDialog.process?.process_name &&
@@ -14,7 +14,7 @@
         port {{ confirmKillingDialog.process?.port }}
         ?
       </h5>
-      <p>
+      <p class="confirm-killing-dialog__text">
         Ending this process may disrupt services using port
         {{ confirmKillingDialog.process?.port }}. Proceeding could result in
         data loss, network issues, or system instability.
@@ -107,53 +107,55 @@ async function cancelKilling(): Promise<void> {
 <style lang="scss" scoped>
 @use '@/styles/abstracts/_mixins.scss' as mixins;
 
-.dialog-overlay {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 4;
-
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
 .confirm-killing-dialog {
+  z-index: 6;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
 
   width: 360px;
-
-  z-index: 6;
   min-height: 120px;
 
-  & > h5 {
-    color: var(--text-main-dialog);
+  background-color: var(--main-dialog-bg);
 
+  border-radius: 16px;
+  padding: 8px 12px;
+
+  &__overlay {
+    z-index: 4;
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    height: 100%;
+    width: 100%;
+
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  &__title {
     font-size: 16px;
     text-align: center;
+    color: var(--text-main-dialog);
+
     margin: 4px 0;
   }
 
-  & > p {
+  &__text {
     color: var(--text-active);
     font-size: 12px;
-    margin-top: 0;
     text-align: center;
-  }
 
-  background-color: var(--main-dialog-bg);
-  border-radius: 16px;
-  padding: 8px 12px;
+    margin-top: 0;
+  }
 
   &__buttons {
     @include mixins.flex-display;
     width: 100%;
     height: 30px;
-
     gap: 4px;
+
     background: transparent;
   }
 }

@@ -36,32 +36,19 @@ const computedProcesses = computed(() => {
   });
 });
 
-// function focusOnTextField(elementReference: typeof BaseTextField): void {
-//   try {
-//     elementReference.focusField();
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
-//
-// function resetFiltration(): void {
-//   pidModel.value = '';
-//   portModel.value = '';
-//   processNameModel.value = '';
-//   processPathModel.value = '';
-// }
-
 const mainElementRef = useTemplateRef<HTMLElement>('mainElementRef');
 const { height: mainElementHeight } = useElementSize(mainElementRef);
 </script>
 
 <template>
+  <!--  NEEDS REFACTOR-->
   <ConfirmKillingDialog />
   <ToastNotificationManager />
-  <div style="flex-grow: 1; display: flex; flex-direction: column">
+
+  <div class="port-processes">
     <TheApplicationWindow ref="applicationWindowRef" />
 
-    <main ref="mainElementRef" style="flex-grow: 1">
+    <main ref="mainElementRef" class="port-processes__content">
       <TheApplicationProcessSearchComponent v-model="searchModel" />
       <V2PortProccessesList
         v-if="mainElementHeight > 0"
@@ -71,114 +58,22 @@ const { height: mainElementHeight } = useElementSize(mainElementRef);
       <TheApplicationProcessFooter />
     </main>
   </div>
-
-  <!--    <div class="port-processes-filtration__wrapper">-->
-  <!--      <div class="port-processes-filtration__filters">-->
-  <!--        <BaseLabeledBox-->
-  <!--          :active-color="boxActiveColor"-->
-  <!--          :background-color="boxBackgroundColor"-->
-  <!--          :color="boxColor"-->
-  <!--          :is-active="!!pidModel.length"-->
-  <!--          @click.left="focusOnTextField(pidTextFieldRef)"-->
-  <!--        >-->
-  <!--          <template #label>PID</template>-->
-  <!--          <template #content>-->
-  <!--            <BaseTextField-->
-  <!--              ref="pidTextFieldRef"-->
-  <!--              v-model="pidModel"-->
-  <!--              placeholder="0001"-->
-  <!--            />-->
-  <!--          </template>-->
-  <!--        </BaseLabeledBox>-->
-  <!--        <BaseLabeledBox-->
-  <!--          :active-color="boxActiveColor"-->
-  <!--          :background-color="boxBackgroundColor"-->
-  <!--          :color="boxColor"-->
-  <!--          :is-active="!!portModel.length"-->
-  <!--          @click.left="focusOnTextField(portTextFieldRef)"-->
-  <!--        >-->
-  <!--          <template #label>Port</template>-->
-  <!--          <template #content>-->
-  <!--            <BaseTextField-->
-  <!--              ref="portTextFieldRef"-->
-  <!--              v-model="portModel"-->
-  <!--              placeholder="3000"-->
-  <!--            />-->
-  <!--          </template>-->
-  <!--        </BaseLabeledBox>-->
-  <!--        <BaseLabeledBox-->
-  <!--          :active-color="boxActiveColor"-->
-  <!--          :background-color="boxBackgroundColor"-->
-  <!--          :color="boxColor"-->
-  <!--          :is-active="!!processNameModel.length"-->
-  <!--          @click.left="focusOnTextField(processNameTextFieldRef)"-->
-  <!--        >-->
-  <!--          <template #label>Process Name</template>-->
-  <!--          <template #content>-->
-  <!--            <BaseTextField-->
-  <!--              ref="processNameTextFieldRef"-->
-  <!--              v-model.trim="processNameModel"-->
-  <!--              placeholder="node"-->
-  <!--            />-->
-  <!--          </template>-->
-  <!--        </BaseLabeledBox>-->
-  <!--        <BaseLabeledBox-->
-  <!--          :active-color="boxActiveColor"-->
-  <!--          :background-color="boxBackgroundColor"-->
-  <!--          :color="boxColor"-->
-  <!--          :is-active="!!processPathModel.length"-->
-  <!--          @click.left="focusOnTextField(processPathTextFieldRef)"-->
-  <!--        >-->
-  <!--          <template #label>Process Path</template>-->
-  <!--          <template #content>-->
-  <!--            <BaseTextField-->
-  <!--              ref="processPathTextFieldRef"-->
-  <!--              v-model.trim="processPathModel"-->
-  <!--              placeholder="/usr/bin/gnome-software"-->
-  <!--            />-->
-  <!--          </template>-->
-  <!--        </BaseLabeledBox>-->
-  <!--      </div>-->
-  <!--      <BaseButton text="Reset Filtration" @left-clicked="resetFiltration" />-->
-  <!--    </div>-->
 </template>
 
 <style lang="scss" scoped>
 @use '@/styles/abstracts/_mixins.scss' as mixins;
 
-.port-processes-filtration {
+.port-processes {
   @include mixins.flex-display;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-content: center;
+  @include mixins.flex-direction-column;
+  @include mixins.justify-content-flexStart;
+  @include mixins.align-content-center;
+
   position: relative;
+  flex-grow: 1;
 
-  padding-bottom: 8px;
-  border-bottom: 1px dashed #3e3e3e;
-
-  &__wrapper {
-    @include mixins.flex-display;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-content: center;
-    position: relative;
-
-    margin: 16px 6px 6px 6px;
-  }
-
-  &__filters {
-    @include mixins.flex-display;
-    gap: 6px;
-    margin-right: 6px;
+  &__content {
     flex-grow: 1;
-
-    & > div {
-      width: 25%;
-    }
   }
-}
-
-main > section {
-  //@include mixins.flex-display;
 }
 </style>

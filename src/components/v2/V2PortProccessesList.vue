@@ -81,11 +81,11 @@ onMounted(() => {
 
 .port-process-table {
   @include mixins.flex-display;
-  flex-direction: column;
+  @include mixins.flex-direction-column;
 
   &__list {
     @include mixins.flex-display;
-    flex-direction: column;
+    @include mixins.flex-direction-column;
 
     &-wrapper {
       margin-top: 12px;
