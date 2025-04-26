@@ -1,9 +1,9 @@
 <template>
   <button
+    :class="{ 'disabled-state': componentProps.isDisabled }"
+    :style="computedStyleObject"
     @click.left="leftClicked($event)"
     @click.right="rightClicked($event)"
-    :style="computedStyleObject"
-    :class="{ 'disabled-state': componentProps.isDisabled }"
   >
     <slot name="prepend">
       <span v-if="componentProps.prependIcon">
@@ -13,11 +13,11 @@
 
     <CircleSpinner
       v-if="componentProps.isLoading"
-      :stroke-width="4"
       :size="20"
+      :stroke-width="4"
     />
 
-    <slot v-else name="content"> {{ text }} </slot>
+    <slot v-else name="content"></slot>
 
     <slot name="append">
       <span v-if="componentProps.appendIcon">
@@ -27,7 +27,7 @@
   </button>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed, type CSSProperties } from 'vue';
 import CircleSpinner from '../loaders/CircleSpinner.vue';
 import { getCssVariable } from '@/utils/theme-helper';
@@ -37,7 +37,6 @@ interface IProps {
   isLoading?: boolean;
   prependIcon?: string;
   appendIcon?: string;
-  text: string;
 
   backgroundColor?: string;
   textColor?: string;
@@ -85,5 +84,8 @@ button {
 
   outline: none;
   border: none;
+
+  background-color: transparent;
+  color: white;
 }
 </style>

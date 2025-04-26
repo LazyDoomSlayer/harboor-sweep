@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "harbor-sweep",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "identifier": "com.harbor-sweep.app",
   "build": {
     "beforeDevCommand": "pnpm dev",
@@ -12,9 +12,12 @@
   "app": {
     "windows": [
       {
-        "title": "Haboor Sweep",
-        "minWidth": 1024,
-        "minHeight": 768,
+        "decorations": false,
+        "title": "Harboor Sweep",
+        "minWidth": 480,
+        "minHeight": 480,
+        "width": 480,
+        "height": 480,
         "theme": "Dark"
       }
     ],
@@ -24,7 +27,11 @@
   },
   "bundle": {
     "active": true,
-    "targets": ["rpm", "deb", "msi"],
+    "targets": [
+      "rpm",
+      "deb",
+      "msi"
+    ],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

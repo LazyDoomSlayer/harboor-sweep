@@ -1,30 +1,49 @@
 <template>
-  <Teleport to="body" v-if="confirmKillingDialog.opened">
-    <div class="dialog-overlay"></div>
+  <Teleport v-if="confirmKillingDialog.opened" to="body">
+    <div class="confirm-killing-dialog__overlay"></div>
     <div class="confirm-killing-dialog">
-      <h2>Kill the following process ?</h2>
-      <code>
-        <pre v-text="confirmKillingDialog.process"></pre>
-      </code>
+      <h5 class="confirm-killing-dialog__title">
+        Kill
+        {{
+          confirmKillingDialog.process?.process_name &&
+          confirmKillingDialog.process?.process_name !== 'Unknown'
+            ? confirmKillingDialog.process?.process_name
+            : 'process'
+        }}
+        {{ confirmKillingDialog.process?.is_listener ? 'hosting' : 'using' }}
+        port {{ confirmKillingDialog.process?.port }}
+        ?
+      </h5>
+      <p class="confirm-killing-dialog__text">
+        Ending this process may disrupt services using port
+        {{ confirmKillingDialog.process?.port }}. Proceeding could result in
+        data loss, network issues, or system instability.
+      </p>
       <div class="confirm-killing-dialog__buttons">
         <BaseButton
-          text="CANCEL"
-          @left-clicked="cancelKilling"
-          class="flex-grow"
           :is-disabled="isLoading"
-        />
+          style="background: var(--cancel-button-bg); width: 50%"
+          @left-clicked="cancelKilling"
+        >
+          <template #content>
+            <span style="color: var(--text-active)"> CANCEL </span>
+          </template>
+        </BaseButton>
         <BaseButton
-          text="CONFIRM"
-          @left-clicked="submitKilling"
-          class="flex-grow"
           :is-loading="isLoading"
-        />
+          style="background: var(--system-negative-bg); width: 50%"
+          @left-clicked="submitKilling"
+        >
+          <template #content>
+            <span style="color: var(--system-negative-text)"> Kill </span>
+          </template>
+        </BaseButton>
       </div>
     </div>
   </Teleport>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import BaseButton from '@/components/base/BaseButton.vue';
 
 import { useDialogsStore } from '@/store/dialogs.store.ts';
@@ -32,7 +51,6 @@ import { storeToRefs } from 'pinia';
 
 import useKillProcess from '@/composables/useKillProcess';
 import { usePortProcessesStore } from '@/store/port-processes.store';
-import { EUsePortProcessesStoreActions } from '@/types/store/port-processes.types';
 
 import { v4 as uuidv4 } from 'uuid';
 import { useNotificationsStore } from '@/store/notifications.store';
@@ -63,9 +81,7 @@ async function submitKilling(): Promise<void> {
     const response = await kill(pid);
 
     if (response?.success) {
-      await portProcessesStore[
-        EUsePortProcessesStoreActions.FETCH_ACTIVE_PORT_PROCCESSES
-      ]();
+      await portProcessesStore.fetchActivePortProcesses();
 
       closeAndRevertToDefaults();
       notificationStore[EUseNotificationsStoreActions.ADD_TOAST_NOTICATION]({
@@ -82,6 +98,7 @@ async function submitKilling(): Promise<void> {
     console.error(error);
   }
 }
+
 async function cancelKilling(): Promise<void> {
   closeAndRevertToDefaults();
 }
@@ -89,41 +106,57 @@ async function cancelKilling(): Promise<void> {
 
 <style lang="scss" scoped>
 @use '@/styles/abstracts/_mixins.scss' as mixins;
-.dialog-overlay {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  background-color: #2e2e2e;
-  opacity: 0.7;
-
-  z-index: 9;
-
-  left: 0;
-  top: 0;
-}
 
 .confirm-killing-dialog {
+  z-index: 6;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
 
-  z-index: 10;
+  width: 360px;
+  min-height: 120px;
 
-  min-width: 400px;
-  min-height: 200px;
+  background-color: var(--main-dialog-bg);
 
-  background-color: #e3e3e3;
-  border-radius: 4px;
-  border: 2px solid #1e1e1e;
-  padding: 4px;
+  border-radius: 16px;
+  padding: 8px 12px;
+
+  &__overlay {
+    z-index: 4;
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    height: 100%;
+    width: 100%;
+
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  &__title {
+    font-size: 16px;
+    text-align: center;
+    color: var(--text-main-dialog);
+
+    margin: 4px 0;
+  }
+
+  &__text {
+    color: var(--text-active);
+    font-size: 12px;
+    text-align: center;
+
+    margin-top: 0;
+  }
 
   &__buttons {
     @include mixins.flex-display;
     width: 100%;
     height: 30px;
-
     gap: 4px;
+
+    background: transparent;
   }
 }
 </style>

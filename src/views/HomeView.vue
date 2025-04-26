@@ -1,194 +1,79 @@
 <script lang="ts" setup>
-import PortProcessesTable from '@/components/PortProcessesTable.vue';
 import ConfirmKillingDialog from '@/components/dialog/ConfirmKillingDialog.vue';
 import ToastNotificationManager from '@/components/notifications/ToastNotificationManager.vue';
-import BaseTextField from '@/components/base/BaseTextField.vue';
-import BaseLabeledBox from '@/components/base/BaseLabeledBox.vue';
-import BaseButton from '@/components/base/BaseButton.vue';
+import TheApplicationWindow from '@/components/v2/TheApplicationWindow.vue';
+import TheApplicationProcessSearchComponent from '@/components/v2/TheApplicationProcessSearchComponent.vue';
+import TheApplicationProcessFooter from '@/components/v2/TheApplicationProcessFooter.vue';
+import V2PortProccessesList from '@/components/v2/V2PortProccessesList.vue';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, useTemplateRef } from 'vue';
 
 import { usePortProcessesStore } from '@/store/port-processes.store';
-import {
-  EUsePortProcessesStoreActions,
-  EUsePortProcessesStoreGetters,
-} from '@/types/store/port-processes.types';
 import type { TPortProcessItem, TPortProcessList } from '@/types';
-
-import { getCssVariable } from '@/utils/theme-helper';
+import { useElementSize } from '@vueuse/core';
 
 const portProcessesStore = usePortProcessesStore();
 
 onMounted(async () => {
-  await portProcessesStore[
-    EUsePortProcessesStoreActions.START_PORT_PROCCESSES_OBSERVER
-  ]();
+  await portProcessesStore.startPortProcessesObserver();
 });
 
-const boxBackgroundColor = getCssVariable('main-background-color');
-const boxColor = getCssVariable('base-label-border-passive-color');
-const boxActiveColor = getCssVariable('dialog-active-color');
-
-const pidModel = ref<string>('');
-const pidTextFieldRef = ref();
-
-const portModel = ref<string>('');
-const portTextFieldRef = ref();
-
-const processNameModel = ref<string>('');
-const processNameTextFieldRef = ref();
-
-const processPathModel = ref<string>('');
-const processPathTextFieldRef = ref();
+const searchModel = ref<string>('');
 
 const computedProcesses = computed(() => {
-  const processes: TPortProcessList =
-    portProcessesStore[EUsePortProcessesStoreGetters.GET_SORTED_PROCESSES];
+  const processes: TPortProcessList = portProcessesStore.getSortedProcesses;
+  const searchValue = searchModel.value.toLowerCase().trim();
+
+  if (!searchValue) return processes;
 
   return processes.filter((process: TPortProcessItem) => {
-    const pidMatch = process.pid
-      .toString()
-      .startsWith(pidModel.value.toString());
-
-    const portMatch = process.port.toString().startsWith(portModel.value);
-
-    const processNameMatch = process.process_name
-      .toLowerCase()
-      .startsWith(processNameModel.value.toLowerCase());
-
-    const processPathMatch = process.process_path
-      .toLowerCase()
-      .startsWith(processPathModel.value.toLowerCase());
-
-    return pidMatch && portMatch && processNameMatch && processPathMatch;
+    return (
+      process.pid.toString().includes(searchValue) ||
+      process.port.toString().includes(searchValue) ||
+      process.process_name.toLowerCase().includes(searchValue) ||
+      process.process_path.toLowerCase().includes(searchValue)
+    );
   });
 });
 
-function focusOnTextField(elementReference: typeof BaseTextField): void {
-  try {
-    elementReference.focusField();
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-function resetFiltration(): void {
-  pidModel.value = '';
-  portModel.value = '';
-  processNameModel.value = '';
-  processPathModel.value = '';
-}
+const mainElementRef = useTemplateRef<HTMLElement>('mainElementRef');
+const { height: mainElementHeight } = useElementSize(mainElementRef);
 </script>
 
 <template>
+  <!--  NEEDS REFACTOR-->
   <ConfirmKillingDialog />
   <ToastNotificationManager />
 
-  <section style="display: flex; flex-direction: column; height: 100%">
-    <div class="port-processes-filtration__wrapper">
-      <div class="port-processes-filtration__filters">
-        <BaseLabeledBox
-          :background-color="boxBackgroundColor"
-          :color="boxColor"
-          :active-color="boxActiveColor"
-          :is-active="!!pidModel.length"
-          @click.left="focusOnTextField(pidTextFieldRef)"
-        >
-          <template #label>PID</template>
-          <template #content>
-            <BaseTextField
-              v-model="pidModel"
-              placeholder="0001"
-              ref="pidTextFieldRef"
-            />
-          </template>
-        </BaseLabeledBox>
-        <BaseLabeledBox
-          :background-color="boxBackgroundColor"
-          :color="boxColor"
-          :active-color="boxActiveColor"
-          :is-active="!!portModel.length"
-          @click.left="focusOnTextField(portTextFieldRef)"
-        >
-          <template #label>Port</template>
-          <template #content>
-            <BaseTextField
-              v-model="portModel"
-              placeholder="3000"
-              ref="portTextFieldRef"
-            />
-          </template>
-        </BaseLabeledBox>
-        <BaseLabeledBox
-          :background-color="boxBackgroundColor"
-          :color="boxColor"
-          :active-color="boxActiveColor"
-          :is-active="!!processNameModel.length"
-          @click.left="focusOnTextField(processNameTextFieldRef)"
-        >
-          <template #label>Process Name</template>
-          <template #content>
-            <BaseTextField
-              v-model.trim="processNameModel"
-              placeholder="node"
-              ref="processNameTextFieldRef"
-            />
-          </template>
-        </BaseLabeledBox>
-        <BaseLabeledBox
-          :background-color="boxBackgroundColor"
-          :color="boxColor"
-          :active-color="boxActiveColor"
-          :is-active="!!processPathModel.length"
-          @click.left="focusOnTextField(processPathTextFieldRef)"
-        >
-          <template #label>Process Path</template>
-          <template #content>
-            <BaseTextField
-              ref="processPathTextFieldRef"
-              v-model.trim="processPathModel"
-              placeholder="/usr/bin/gnome-software"
-            />
-          </template>
-        </BaseLabeledBox>
-      </div>
-      <BaseButton text="Reset Filtration" @left-clicked="resetFiltration" />
-    </div>
-    <PortProcessesTable style="flex-grow: 1" :list="computedProcesses" />
-  </section>
+  <div class="port-processes">
+    <TheApplicationWindow ref="applicationWindowRef" />
+
+    <main ref="mainElementRef" class="port-processes__content">
+      <TheApplicationProcessSearchComponent v-model="searchModel" />
+      <V2PortProccessesList
+        v-if="mainElementHeight > 0"
+        :available-height="mainElementHeight"
+        :list="computedProcesses"
+      />
+      <TheApplicationProcessFooter />
+    </main>
+  </div>
 </template>
 
 <style lang="scss" scoped>
 @use '@/styles/abstracts/_mixins.scss' as mixins;
 
-.port-processes-filtration {
+.port-processes {
   @include mixins.flex-display;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-content: center;
+  @include mixins.flex-direction-column;
+  @include mixins.justify-content-flexStart;
+  @include mixins.align-content-center;
+
   position: relative;
+  flex-grow: 1;
 
-  padding-bottom: 8px;
-  border-bottom: 1px dashed #3e3e3e;
-
-  &__wrapper {
-    @include mixins.flex-display;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-content: center;
-    position: relative;
-
-    margin: 16px 6px 6px 6px;
-  }
-  &__filters {
-    @include mixins.flex-display;
-    gap: 6px;
-    margin-right: 6px;
+  &__content {
     flex-grow: 1;
-
-    & > div {
-      width: 25%;
-    }
   }
 }
 </style>

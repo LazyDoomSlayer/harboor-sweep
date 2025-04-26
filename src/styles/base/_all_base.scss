@@ -1,4 +1,5 @@
 @use '../abstracts/_variables.scss' as variables;
+@use '../abstracts/_mixins.scss' as mixins;
 
 * {
   pointer-events: auto;
@@ -7,13 +8,17 @@
 html,
 body,
 #app {
-  margin: 0;
   padding: 0;
+  margin: 0;
+
   height: 100dvh;
   width: 100dvw;
-  overflow: hidden;
 
-  background-color: variables.get-color('main-background-color');
+  overflow: hidden !important;
+  background-color: var(--main-bg);
+
+  @include mixins.default-font;
+  font-weight: 300;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -22,21 +27,56 @@ body,
   -webkit-text-size-adjust: 100%;
 }
 
-.text-clamp {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  text-overflow: ellipsis;
-  -webkit-line-clamp: 1;
-  word-break: break-all;
+
+#app {
+  display: flex;
+  flex-direction: column;
 }
 
-.disabled-state {
-  opacity: 0.7;
-  pointer-events: none;
-  cursor: default !important;
+
+html {
+  margin: 40px 0 0;
 }
 
-.flex-grow {
-  flex-grow: 1;
+:root {
+  --main-bg: #1d1d20;
+  --main-dialog-bg: #36363a;
+  --text-main-dialog: #ffffff;
+
+  --main-divider-bg: #3f3f41;
+
+  --text-active: #e0e0e0;
+  --text-inactive: #555557;
+
+  --main-button-bg: #343436;
+  --main-element-focused: #5a82b6;
+
+  --main-input-bg: #343436;
+  --text-main-input-label: #a4a4a5;
+  --text-main-input: #e3e3e3;
+  --main-input-icon: #c1c1c2;
+
+
+  --text-process-list-header: #777779;
+  --text-process-list-header-hovered: #bbbbbc;
+  --process-list-header-icon: #3b3b3e;
+
+  --text-process-list-item: #ffffff;
+  --process-list-item-bg: #1d1d20;
+  --process-list-item-bg-focused: #233751;
+
+
+  --process-footer-bg: #2e2e32;
+  --process-footer-bg-inactive: #222226;
+
+  --system-positive-color: #398a5c;
+  --system-positive-text: #33d17a;
+
+  --system-negative-bg: #563d3f;
+  --system-negative-text: #ff938b;
+  --system-negative-bg-hovered: #634244;
+
+  --cancel-button-bg: #4a4a4e;
 }
+
+

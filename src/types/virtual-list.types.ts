@@ -7,4 +7,5 @@ export interface IProps {
   list: unknown[];
   scrollBehavior?: EScrollBehavior;
   itemHeight: number;
+  availableHeight: number;
 }

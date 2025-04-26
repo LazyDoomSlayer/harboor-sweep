@@ -1,4 +1,13 @@
 @use '@/styles/abstracts/_variables.scss' as variables;
+@use '../abstracts/_mixins.scss' as mixins;
+
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #777 transparent;
+}
+
 
 .spacer {
   flex-grow: 1;
@@ -7,28 +16,19 @@
 }
 
 
-/* Base styling for the scroller */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+.hide-text-overflow-line-1 {
+  @include mixins.hide-text-overflow;
+  -webkit-line-clamp: 1;
 }
 
-::-webkit-scrollbar-track {
-  background: transparent !important; /* Dark track */
-  border-radius: 10px;
+.default-disabled-state {
+  @include mixins.default-disabled-state;
 }
 
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #555, #888); /* Subtle gradient */
-  border-radius: 10px;
+.flex-grow {
+  flex-grow: 1;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #777, #aaa); /* Slightly lighter on hover */
-}
-
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #777 transparent;
+.application-unfocused {
+  opacity: 0.6;
 }

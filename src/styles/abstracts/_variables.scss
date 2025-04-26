@@ -1,42 +1,31 @@
 @use 'sass:map';
 
 $colors: (
-  'main-background-color': #222436,
-  'main-background-color-selected': #2f334d,
-  'main-background-color-overlayed': #141520,
-
-  'command-menu-item-title-color': #86e1fc,
-  'command-menu-item-shortcut-color': #f39069,
-
-  'command-menu-item-selected-background-color': #ffffff,
-  'command-menu-item-selected-text-color': #1e1e1e,
-
-  'dialog-background-color': #222436,
-  'dialog-border-color': #589ed7,
-  'dialog-active-color': #ff966c,
-
-  'base-label-border-passive-color': #c8d3f5,
-  'link-text-color': #9277c5,
-  'active-text-color': #82aaff,
-
-  'branch-mode-background-color': #3b4261,
-
-  'skill-item-selected-background-color': #2d3f76,
-  'positive-color': #33d17a,
-  'negative-color': #f66151,
-
-  'editor-line-text-color': #3b4261,
-  'editor-current-line-text-color': #ff966c,
+        'main-bg': #1d1d20,
+        'text-active': #e0e0e0,
+        'text-inactive': #555557,
+        'main-button-bg': #343436,
+        'main-element-focused': #5a82b6,
+        'main-input-bg': #343436,
+        'text-main-input-label': #a4a4a5,
+        'text-main-input': #e3e3e3,
+        'main-input-icon': #c1c1c2,
+        'text-process-list-header': #777779,
+        'text-process-list-header-hovered': #bbbbbc,
+        'process-list-header-icon': #3b3b3e,
+        'process-list-item-bg': #1d1d20,
+        'process-list-item-bg-focused': #233751
 );
 
+
 $animation-speed: (
-  'fast': 55ms,
-  'medium': 150ms,
-  'slow': 300ms,
+        'fast': 55ms,
+        'medium': 150ms,
+        'slow': 300ms,
 );
 
 $animation-type: (
-  'default': ease-in-out,
+        'default': ease-in-out,
 );
 
 @function get-color($key) {

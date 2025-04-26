@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-// @ts-expect-error remove type issues
-
-import { computed, type CSSProperties, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { EScrollBehavior, type IProps } from '@/types/virtual-list.types';
 import { UseVirtualList } from '@vueuse/components';
 
@@ -9,11 +7,6 @@ const componentProps = withDefaults(defineProps<IProps>(), {
   scrollBehavior: EScrollBehavior.AUTO,
 });
 
-const virtualListStyle = computed<CSSProperties>(() => {
-  return {
-    scrollBehavior: componentProps.scrollBehavior,
-  };
-});
 const computedList = computed(() => {
   console.log(' componentProps.list', componentProps.list);
   return componentProps.list;
@@ -51,9 +44,9 @@ defineExpose({
 
 <template>
   <UseVirtualList
+    :height="`${availableHeight}px`"
     :list="computedList"
-    :options="{ itemHeight: 32 }"
-    height="100%"
+    :options="{ itemHeight: componentProps.itemHeight }"
   >
     <template #default="props">
       <slot :item="props.data" name="item"></slot>
@@ -61,8 +54,4 @@ defineExpose({
   </UseVirtualList>
 </template>
 
-<style lang="scss" scoped>
-.recycle-scroller {
-  height: 100%;
-}
-</style>
+<style lang="scss" scoped></style>

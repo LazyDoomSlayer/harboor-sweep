@@ -1,8 +1,8 @@
 {
   "name": "harbor-sweep",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": false,
-  "description": "GUI App",
+  "description": "Cross-platform tool to identify and manage active ports and their processes",
   "type": "module",
   "repository": {
     "type": "git",
@@ -31,7 +31,7 @@
     "format:check": "prettier --check src/"
   },
   "dependencies": {
-    "@fontsource/jetbrains-mono": "^5.1.1",
+    "@fontsource/funnel-sans": "^5.2.5",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
     "@vueuse/components": "^13.1.0",
