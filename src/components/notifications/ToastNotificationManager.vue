@@ -4,7 +4,7 @@
       v-for="(toast, index) in toastNotifications"
       :key="toast.id"
       :style="{ top: `${index * 80}px` }"
-      class="toast-wrapper"
+      class="toast-manager__wrapper"
     >
       <ToastNotificationItem
         :data="toast"
@@ -41,13 +41,12 @@ function handleRemovingToast(notification_id: string): void {
 
 .toast-manager {
   @include mixins.flex-display;
-  flex-direction: column;
-  justify-content: flex-end;
+  @include mixins.flex-direction-column;
+  @include mixins.justify-content-flexEnd;
 
   position: absolute;
   top: 0;
   right: 0;
-
   z-index: 9;
 
   pointer-events: none;
@@ -55,9 +54,10 @@ function handleRemovingToast(notification_id: string): void {
   padding: 20px;
   gap: 10px;
   height: calc(100dvh - 40px);
-}
 
-.toast-wrapper {
-  pointer-events: auto;
+  &__wrapper {
+    pointer-events: auto;
+    position: relative;
+  }
 }
 </style>

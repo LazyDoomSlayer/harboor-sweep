@@ -1,13 +1,13 @@
 <template>
   <div
-    class="toast-item"
     :style="styleObject"
+    class="toast-item"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"
   >
     <span
-      class="toast-item__icon toast-item__icon--prepend"
       v-if="props.data.prependIcon"
+      class="toast-item__icon toast-item__icon--prepend"
     >
       <span class="material-symbols-outlined">{{
         props.data.prependIcon
@@ -22,8 +22,8 @@
     </div>
 
     <span
-      class="toast-item__icon toast-item__icon--append"
       v-if="props.data.appendIcon"
+      class="toast-item__icon toast-item__icon--append"
     >
       <span class="material-symbols-outlined">{{ props.data.appendIcon }}</span>
     </span>
@@ -37,9 +37,9 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { IToastNotification } from '@/types/store/notifications.types';
-import { onMounted, type CSSProperties, ref } from 'vue';
+import { type CSSProperties, onMounted, ref } from 'vue';
 
 interface IToastNotificationItemProps {
   data: IToastNotification;
@@ -86,10 +86,10 @@ function removeNotification(): void {
 
 .toast-item {
   @include mixins.flex-display;
+  @include mixins.justify-content-space-between;
+  @include mixins.align-content-center;
   @include mixins.transition-all('medium');
 
-  align-items: center;
-  justify-content: space-between;
   padding: 10px 15px;
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -103,21 +103,26 @@ function removeNotification(): void {
   &:hover {
     transform: scale(1.05);
   }
+
   &__content {
     flex: 1;
     margin: 0 10px;
   }
+
   &__title {
     font-weight: inherit;
   }
+
   &__description {
     font-size: 12px;
     color: #e0e0e0;
   }
+
   &__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include mixins.flex-display;
+    @include mixins.justify-content-center;
+    @include mixins.align-content-center;
+
     font-size: 20px;
 
     &--prepend {
