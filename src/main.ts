@@ -3,6 +3,7 @@ import { createPinia } from 'pinia';
 
 // Fonts
 import '@fontsource/funnel-sans/300.css';
+import '@fontsource/funnel-sans/500.css';
 
 import 'material-icons/iconfont/outlined.css';
 import 'material-symbols/outlined.css';
